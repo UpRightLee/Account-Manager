@@ -3,12 +3,65 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:vm="clr-namespace:InOutNote.ViewModels"
       xmlns:local="clr-namespace:InOutNote.Views"
+      xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:dataControl="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=DotNetProjects.DataVisualization.Toolkit"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="HomeView">
-
+    <Page.DataContext>
+        <vm:HomeViewModel/>
+    </Page.DataContext>
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="Loaded">
+            <behaviors:InvokeCommandAction Command="{Binding LoadHomeViewCommand}"/>
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
     <Grid>
-        <Button Content="Home"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.2*"/>
+            <RowDefinition Height="0.8*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="0" Grid.Row="0">
+            <Label Content="Weekly Report" Style="{DynamicResource CustomLabel}"/>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="0">
+            <Label Content="Monthly Report" Style="{DynamicResource CustomLabel}"/>
+        </Grid>
+        <Grid Grid.Column="0" Grid.Row="1">
+            <dataControl:Chart Width="auto" Height="auto">
+                <dataControl:Chart.Axes>
+                    <dataControl:CategoryAxis Orientation="X"/>
+                </dataControl:Chart.Axes>
+                <dataControl:ColumnSeries Title="입금" DataPointStyle="{StaticResource MyColumnDataPointStyle}"
+                ItemsSource="{Binding InDataList, UpdateSourceTrigger=PropertyChanged}"
+                IndependentValueBinding="{Binding Path=WeekDay, UpdateSourceTrigger=PropertyChanged}"
+                DependentValueBinding="{Binding Path=Money, UpdateSourceTrigger=PropertyChanged}" />
+                <dataControl:ColumnSeries Title="출금" DataPointStyle="{StaticResource MyColumnDataPointStyle2}"
+                ItemsSource="{Binding OutDataList, UpdateSourceTrigger=PropertyChanged}"
+                IndependentValueBinding="{Binding Path=WeekDay, UpdateSourceTrigger=PropertyChanged}"
+                DependentValueBinding="{Binding Path=Money, UpdateSourceTrigger=PropertyChanged}" />
+            </dataControl:Chart>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="1">
+            <dataControl:Chart Width="auto" Height="auto">
+                <dataControl:Chart.Axes>
+                    <dataControl:CategoryAxis Orientation="X"/>
+                </dataControl:Chart.Axes>
+                <dataControl:ColumnSeries Title="입금" DataPointStyle="{StaticResource MyColumnDataPointStyle}"
+                ItemsSource="{Binding InMonthDataList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                IndependentValueBinding="{Binding Path=MonthsName, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                DependentValueBinding="{Binding Path=Money, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                <dataControl:ColumnSeries Title="출금" DataPointStyle="{StaticResource MyColumnDataPointStyle2}"
+                ItemsSource="{Binding OutMonthDataList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                IndependentValueBinding="{Binding Path=MonthsName, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                DependentValueBinding="{Binding Path=Money, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            </dataControl:Chart>
+        </Grid>
     </Grid>
 </Page>
