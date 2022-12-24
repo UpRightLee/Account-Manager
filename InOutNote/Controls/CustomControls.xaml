@@ -46,14 +46,38 @@
         <Setter Property="BorderBrush" Value="#FFFFFF"/>
     </Style>
     <Style x:Key="MyColumnDataPointStyle"
-         TargetType="{x:Type dataControl:ColumnDataPoint}">
+         TargetType="dataControl:ColumnDataPoint">
         <Setter Property="Background"
             Value="#66B2FF" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type dataControl:ColumnDataPoint}">
+                    <Grid>
+                        <Rectangle Fill="{TemplateBinding Background}" Stroke="Black"/>
+                        <Grid Margin="0 -20 0 0" HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <TextBlock Text="{TemplateBinding FormattedDependentValue}" Margin="2"/>
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
     <Style x:Key="MyColumnDataPointStyle2"
-         TargetType="{x:Type dataControl:ColumnDataPoint}">
+         TargetType="dataControl:ColumnDataPoint">
         <Setter Property="Background"
             Value="#FF6666" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type dataControl:ColumnDataPoint}">
+                    <Grid>
+                        <Rectangle Fill="{TemplateBinding Background}" Stroke="Black"/>
+                        <Grid Margin="0 -20 0 0" HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <TextBlock Text="{TemplateBinding FormattedDependentValue}" Margin="2"/>
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
     <Style x:Key="CustomDatePicker" TargetType="DatePicker">
         <Setter Property="Background" Value="#2E2E2E"/>

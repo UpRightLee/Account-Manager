@@ -1,9 +1,12 @@
 ﻿using InOutNote.DataBase;
+using log4net;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -13,10 +16,11 @@ namespace InOutNote
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
-    {
+    {  
+        private static readonly ILog log = LogManager.GetLogger(typeof(App));
         protected override void OnStartup(StartupEventArgs e)
         {
-            DataBaseManager.Instance.CreateDB();
+            log.Info("=============Application Start=============");
             base.OnStartup(e);
         }
     }

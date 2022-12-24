@@ -22,15 +22,17 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.1*"/>
             <RowDefinition Height="0.9*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Column="0" Grid.Row="0">
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
             <Label Content="Weekly Report" Style="{DynamicResource CustomLabel}"/>
         </Grid>
-        <Grid Grid.Column="1" Grid.Row="0">
+        <Grid Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="0">
             <Label Content="Monthly Report" Style="{DynamicResource CustomLabel}"/>
         </Grid>
         <Grid Grid.Column="0" Grid.Row="1">
@@ -40,15 +42,22 @@
                 </dataControl:Chart.Axes>
                 <dataControl:ColumnSeries Title="입금" DataPointStyle="{StaticResource MyColumnDataPointStyle}"
                 ItemsSource="{Binding InDataList, UpdateSourceTrigger=PropertyChanged}"
-                IndependentValueBinding="{Binding Path=WeekDay, UpdateSourceTrigger=PropertyChanged}"
-                DependentValueBinding="{Binding Path=Money, UpdateSourceTrigger=PropertyChanged}" />
-                <dataControl:ColumnSeries Title="출금" DataPointStyle="{StaticResource MyColumnDataPointStyle2}"
-                ItemsSource="{Binding OutDataList, UpdateSourceTrigger=PropertyChanged}"
-                IndependentValueBinding="{Binding Path=WeekDay, UpdateSourceTrigger=PropertyChanged}"
-                DependentValueBinding="{Binding Path=Money, UpdateSourceTrigger=PropertyChanged}" />
+                IndependentValueBinding="{Binding WeekDay, UpdateSourceTrigger=PropertyChanged}"
+                DependentValueBinding="{Binding Money, UpdateSourceTrigger=PropertyChanged}" />
             </dataControl:Chart>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="1">
+            <dataControl:Chart Width="auto" Height="auto">
+                <dataControl:Chart.Axes>
+                    <dataControl:CategoryAxis Orientation="X"/>
+                </dataControl:Chart.Axes>
+                <dataControl:ColumnSeries Title="출금" DataPointStyle="{StaticResource MyColumnDataPointStyle2}"
+                ItemsSource="{Binding OutDataList, UpdateSourceTrigger=PropertyChanged}"
+                IndependentValueBinding="{Binding WeekDay, UpdateSourceTrigger=PropertyChanged}"
+                DependentValueBinding="{Binding Money, UpdateSourceTrigger=PropertyChanged}" />
+            </dataControl:Chart>
+        </Grid>
+        <Grid Grid.Column="2" Grid.Row="1">
             <dataControl:Chart Width="auto" Height="auto">
                 <dataControl:Chart.Axes>
                     <dataControl:CategoryAxis Orientation="X"/>
@@ -57,6 +66,13 @@
                 ItemsSource="{Binding InMonthDataList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 IndependentValueBinding="{Binding Path=MonthsName, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                 DependentValueBinding="{Binding Path=Money, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            </dataControl:Chart>
+        </Grid>
+        <Grid Grid.Column="3" Grid.Row="1">
+            <dataControl:Chart Width="auto" Height="auto">
+                <dataControl:Chart.Axes>
+                    <dataControl:CategoryAxis Orientation="X"/>
+                </dataControl:Chart.Axes>
                 <dataControl:ColumnSeries Title="출금" DataPointStyle="{StaticResource MyColumnDataPointStyle2}"
                 ItemsSource="{Binding OutMonthDataList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 IndependentValueBinding="{Binding Path=MonthsName, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InOutNote"
         mc:Ignorable="d"
-        Title="In_Out_Note" Height="650" Width="1100">
+        Title="In_Out_Note" Height="800" Width="1300">
     <Grid>
         <TabControl Background="#BCBDC2">
             <TabItem Style="{StaticResource TabItemControl}">

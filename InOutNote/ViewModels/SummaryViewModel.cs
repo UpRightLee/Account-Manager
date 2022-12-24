@@ -1,4 +1,5 @@
 ﻿using InOutNote.Command;
+using InOutNote.DataBase;
 using InOutNote.Notifier;
 using System;
 using System.Collections.Generic;
@@ -81,7 +82,9 @@ namespace InOutNote.ViewModels
 
             MonthList = new ObservableCollection<string>();
             List<int> months = Enumerable.Range(1, 12).ToList();
+            
             months.ForEach(month => MonthList.Add(month.ToString()));
+            MonthList.Add("전체");
             SelectedMonth = "전체";
         }
     }
