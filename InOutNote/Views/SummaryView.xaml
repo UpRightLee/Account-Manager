@@ -3,12 +3,67 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:vm="clr-namespace:InOutNote.ViewModels"
       xmlns:local="clr-namespace:InOutNote.Views"
+      xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SummaryView">
-
+    <Page.DataContext>
+        <vm:SummaryViewModel/>
+    </Page.DataContext>
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="Loaded">
+            <behaviors:InvokeCommandAction Command="{Binding LoadSummaryViewCommand}"/>
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
     <Grid>
-        <Button Content="Summary_View"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.15*"/>
+            <RowDefinition Height="0.85*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.3*"/>
+                <ColumnDefinition Width="0.3*"/>
+                <ColumnDefinition Width="0.2*"/>
+                <ColumnDefinition Width="0.2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.4*"/>
+                    <ColumnDefinition Width="0.6*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Label Content="Year" Style="{DynamicResource CustomLabel}"/>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <ComboBox Grid.Column="1" Style="{DynamicResource CustomComboBox}" 
+                          ItemsSource="{Binding YearList}" SelectedItem="{Binding SelectedYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.4*"/>
+                    <ColumnDefinition Width="0.6*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Label Content="Month" Style="{DynamicResource CustomLabel}"/>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <ComboBox Grid.Column="1" Style="{DynamicResource CustomComboBox}" 
+                          ItemsSource="{Binding MonthList}" SelectedItem="{Binding SelectedMonth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </Grid>
+            <Grid Grid.Column="2">
+                <Button Content="조회" Style="{DynamicResource CustomButton}" Command="{Binding SelectDataCommand}"/>
+            </Grid>
+            <Grid Grid.Column="3">
+                <Button Content="Excel" Style="{DynamicResource CustomButton}" Command="{Binding ExcelDownloadCommand}"/>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Label Content="Total Summary" Style="{DynamicResource CustomLabel}"/>
+        </Grid>
     </Grid>
 </Page>
