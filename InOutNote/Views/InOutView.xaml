@@ -32,7 +32,6 @@
                 <RowDefinition Height="0.5*"/>
                 <RowDefinition Height="0.5*"/>
             </Grid.RowDefinitions>
-            <Border BorderBrush="#000000" BorderThickness="2"/>
             <Grid Grid.Column="0" Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.3*"/>
@@ -109,30 +108,19 @@
             </Grid>
         </Grid>
         <Grid Grid.Row="1" Background="#e2e2e2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="0.1*"/>
-                <RowDefinition Height="0.9*"/>
-            </Grid.RowDefinitions>
-            <Border BorderBrush="#000000" BorderThickness="2"/>
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.25*"/>
-                    <ColumnDefinition Width="0.15*"/>
-                    <ColumnDefinition Width="0.15*"/>
-                    <ColumnDefinition Width="0.15*"/>
-                    <ColumnDefinition Width="0.15*"/>
-                    <ColumnDefinition Width="0.15*"/>
-                    <ColumnDefinition Width="0.15*"/>
-                    <ColumnDefinition Width="0.15*"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Content="날짜" Style="{DynamicResource CustomLabel}"/>
-                <Label Grid.Column="1" Content="입출" Style="{DynamicResource CustomLabel}"/>
-                <Label Grid.Column="2" Content="금액" Style="{DynamicResource CustomLabel}"/>
-                <Label Grid.Column="3" Content="분류" Style="{DynamicResource CustomLabel}"/>
-                <Label Grid.Column="4" Content="카드" Style="{DynamicResource CustomLabel}"/>
-                <Label Grid.Column="5" Content="은행" Style="{DynamicResource CustomLabel}"/>
-                <Label Grid.Column="6" Content="용도" Style="{DynamicResource CustomLabel}"/>
-                <Label Grid.Column="7" Content="총합" Style="{DynamicResource CustomLabel}"/>
+            <Grid>
+                <DataGrid ItemsSource="{Binding InOutList}" Style="{DynamicResource CustomGrid}" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="날짜" Binding="{Binding UseDate}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="입출" Binding="{Binding InOut}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="금액" Binding="{Binding Money}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCellMoney}"/>
+                        <DataGridTextColumn Header="분류" Binding="{Binding Kind}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="카드" Binding="{Binding Card}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="은행" Binding="{Binding Bank}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="용도" Binding="{Binding Use}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="세부내역" Binding="{Binding Detail}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </Grid>
     </Grid>

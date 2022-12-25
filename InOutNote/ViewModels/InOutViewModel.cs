@@ -1,4 +1,6 @@
 ﻿using InOutNote.Command;
+using InOutNote.DataBase;
+using InOutNote.Models;
 using InOutNote.Notifier;
 using System;
 using System.Collections.Generic;
@@ -13,7 +15,11 @@ namespace InOutNote.ViewModels
     {
         private DateTime selectedFromDate;
         private DateTime selectedToDate;
-        
+
+        private static IDataBaseService dataBaseService = DataBaseService.Instance;
+
+        private ObservableCollection<InOutModel> inOutList = new ObservableCollection<InOutModel>();
+
         private ObservableCollection<string> inOut = new ObservableCollection<string>();
         private ObservableCollection<string> kind = new ObservableCollection<string>();
         private ObservableCollection<string> bank = new ObservableCollection<string>();
@@ -44,6 +50,17 @@ namespace InOutNote.ViewModels
                 OnPropertyChanged("SelectedToDate");
             }
         }
+
+        public ObservableCollection<InOutModel> InOutList
+        {
+            get { return inOutList; }
+            set
+            {
+                inOutList = value;
+                OnPropertyChanged("InOutList");
+            }
+        }
+
         public ObservableCollection<string> InOut
         {
             get { return inOut; }
@@ -166,7 +183,34 @@ namespace InOutNote.ViewModels
 
         private void SelectData()
         {
-            Console.WriteLine("Select Data Command");
+            List<InOutModel> returnInOutData = dataBaseService.SelectAllInOutData(
+                SelectedFromDate.ToString("yyyy-MM-dd"), SelectedToDate.ToString("yyyy-MM-dd"),
+                new InOutModel
+                {
+                    Bank = SelectedBank,
+                    Card = SelectedCard,
+                    Kind = SelectedKind,
+                    Use = SelectedUse,
+                    InOut = SelectedInOut
+                });
+
+            InOutList = new ObservableCollection<InOutModel>();
+
+            for (int i = 0; i < returnInOutData.Count; i++)
+            {
+                InOutList.Add(
+                    new InOutModel
+                    {
+                        InOut = returnInOutData[i].InOut,
+                        Money = String.Format("{0:#,###}", int.Parse(returnInOutData[i]?.Money!)),
+                        Kind = returnInOutData[i].Kind,
+                        Use = returnInOutData[i].Use,
+                        Bank = returnInOutData[i].Bank,
+                        Card = returnInOutData[i].Card,
+                        UseDate = returnInOutData[i].UseDate,
+                        Detail = returnInOutData[i].Detail
+                    });
+            }
         }
 
         private void LoadInOutView()
@@ -187,23 +231,62 @@ namespace InOutNote.ViewModels
             Kind.Add("전체");
             SelectedKind = "전체";
 
+            List<string> returnCard = dataBaseService.SelectCardCode();
             Card = new ObservableCollection<string>();
-            Card.Add("IBK신용카드");
-            Card.Add("국민체크카드");
+            for (int i = 0; i < returnCard.Count; i++)
+            {
+                Card.Add(returnCard[i]);
+            }
             Card.Add("전체");
             SelectedCard = "전체";
 
+            
+            List<string> returnBank = dataBaseService.SelectBankCode();
             Bank = new ObservableCollection<string>();
-            Bank.Add("국민은행");
-            Bank.Add("기업은행");
+            for (int i = 0; i < returnBank.Count; i++)
+            {
+                Bank.Add(returnBank[i]);
+            }
             Bank.Add("전체");
             SelectedBank = "전체";
 
+            List<string> returnUse = dataBaseService.SelectUseCode();
             Use = new ObservableCollection<string>();
-            Use.Add("생활비");
-            Use.Add("가스비");
+            for (int i = 0; i < returnUse.Count; i++)
+            {
+                Use.Add(returnUse[i]);
+            }
             Use.Add("전체");
             SelectedUse = "전체";
+
+            List<InOutModel> returnInOutData = dataBaseService.SelectAllInOutData(
+                SelectedFromDate.ToString("yyyy-MM-dd"), SelectedToDate.ToString("yyyy-MM-dd"), 
+                new InOutModel
+                {
+                    Bank = SelectedBank,
+                    Card = SelectedCard,
+                    Kind = SelectedKind,
+                    Use = SelectedUse,
+                    InOut = SelectedInOut
+                });
+
+            InOutList = new ObservableCollection<InOutModel>();
+
+            for (int i = 0; i < returnInOutData.Count; i++)
+            {
+                InOutList.Add(
+                    new InOutModel 
+                    { 
+                        InOut = returnInOutData[i].InOut, 
+                        Money = String.Format("{0:#,###}", int.Parse(returnInOutData[i]?.Money!)),
+                        Kind = returnInOutData[i].Kind,
+                        Use = returnInOutData[i].Use,
+                        Bank= returnInOutData[i].Bank,
+                        Card = returnInOutData[i].Card,
+                        UseDate = returnInOutData[i].UseDate,
+                        Detail = returnInOutData[i].Detail
+                    });
+            }
         }
     }
 }

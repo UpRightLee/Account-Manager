@@ -82,8 +82,8 @@ namespace InOutNote.ViewModels
 
         private void LoadHomeView()
         {
-            List<InOutModel> weeklyData = dataBaseService.GetWeeklyInOutData();
-            List<InOutModel> monthlyData = dataBaseService.GetMonthlyInOutData();
+            List<InOutModel> weeklyData = dataBaseService.SelectWeeklyInOutData();
+            List<InOutModel> monthlyData = dataBaseService.SelectMonthlyInOutData();
 
             if (weeklyData.Count <= 0)
             {
@@ -101,11 +101,11 @@ namespace InOutNote.ViewModels
             {
                 if (weeklyData[i].InOut == "입금")
                 {
-                    InDataList.Add(new WeeklyReport { WeekDay = weeklyData[i].UseDate, Money = weeklyData[i].Money });
+                    InDataList.Add(new WeeklyReport { WeekDay = weeklyData[i].UseDate, Money = weeklyData[i].returnInt(weeklyData[i]?.Money!) });
                 }
                 else if (weeklyData[i].InOut == "출금")
                 {
-                    OutDataList.Add(new WeeklyReport { WeekDay = weeklyData[i].UseDate, Money = weeklyData[i].Money });
+                    OutDataList.Add(new WeeklyReport { WeekDay = weeklyData[i].UseDate, Money = weeklyData[i].returnInt(weeklyData[i]?.Money!) });
                 }
             }
 
@@ -116,11 +116,11 @@ namespace InOutNote.ViewModels
             {
                 if (monthlyData[i].InOut == "입금")
                 {
-                    InMonthDataList.Add(new MonthlyReport { MonthsName = monthlyData[i].UseDate?.Substring(5,2)+"월", Money = monthlyData[i].Money });
+                    InMonthDataList.Add(new MonthlyReport { MonthsName = monthlyData[i].UseDate?.Substring(5,2)+"월", Money = monthlyData[i].returnInt(monthlyData[i]?.Money!) });
                 }
                 else if (monthlyData[i].InOut == "출금")
                 {
-                    OutMonthDataList.Add(new MonthlyReport { MonthsName = monthlyData[i].UseDate?.Substring(5, 2) + "월", Money = monthlyData[i].Money });
+                    OutMonthDataList.Add(new MonthlyReport { MonthsName = monthlyData[i].UseDate?.Substring(5, 2) + "월", Money = monthlyData[i].returnInt(monthlyData[i]?.Money!) });
                 }
             }
         }
