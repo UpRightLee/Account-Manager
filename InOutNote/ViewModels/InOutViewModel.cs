@@ -231,30 +231,30 @@ namespace InOutNote.ViewModels
             Kind.Add("전체");
             SelectedKind = "전체";
 
-            List<string> returnCard = dataBaseService.SelectCardCode();
+            List<Card> returnCard = dataBaseService.SelectCardCode();
             Card = new ObservableCollection<string>();
             for (int i = 0; i < returnCard.Count; i++)
             {
-                Card.Add(returnCard[i]);
+                Card.Add(returnCard[i].Description!);
             }
             Card.Add("전체");
             SelectedCard = "전체";
 
             
-            List<string> returnBank = dataBaseService.SelectBankCode();
+            List<Bank> returnBank = dataBaseService.SelectBankCode();
             Bank = new ObservableCollection<string>();
             for (int i = 0; i < returnBank.Count; i++)
             {
-                Bank.Add(returnBank[i]);
+                Bank.Add(returnBank[i].Description!);
             }
             Bank.Add("전체");
             SelectedBank = "전체";
 
-            List<string> returnUse = dataBaseService.SelectUseCode();
+            List<Use> returnUse = dataBaseService.SelectUseCode();
             Use = new ObservableCollection<string>();
             for (int i = 0; i < returnUse.Count; i++)
             {
-                Use.Add(returnUse[i]);
+                Use.Add(returnUse[i].Description!);
             }
             Use.Add("전체");
             SelectedUse = "전체";

@@ -181,7 +181,7 @@ namespace InOutNote.DataBase
                 {
                     connection.Open();
 
-                    string sql = "SELECT InOut, Money, A.Code AS Bank, B.Code AS Card, C.Code AS UseWhere, A.Kind, UseDate, Detail " +
+                    string sql = "SELECT InOut, Money, A.Description AS Bank, B.Description AS Card, C.Description AS UseWhere, A.Kind, UseDate, Detail " +
                         "FROM Balance_Info " +
                         "LEFT JOIN Bank_Code A ON Balance_Info.Bank = A.Bank " +
                         "LEFT JOIN Card_Code B ON Balance_Info.Card = B.Card " +
@@ -190,9 +190,9 @@ namespace InOutNote.DataBase
 
                     if (inOutModel.InOut != "전체") sql = sql + $"AND InOut = '{(inOutModel.InOut == "입금" ? "IN" : "OUT")}' ";
                     if (inOutModel.Kind != "전체") sql = sql + $"AND A.Kind = '{inOutModel.Kind}' ";
-                    if (inOutModel.Bank != "전체") sql = sql + $"AND A.Code = '{inOutModel.Bank}' ";
-                    if (inOutModel.Card != "전체") sql = sql + $"AND B.Code = '{inOutModel.Card}' ";
-                    if (inOutModel.Use != "전체") sql = sql + $"AND C.Code = '{inOutModel.Use}' ";
+                    if (inOutModel.Bank != "전체") sql = sql + $"AND A.Description = '{inOutModel.Bank}' ";
+                    if (inOutModel.Card != "전체") sql = sql + $"AND B.Description = '{inOutModel.Card}' ";
+                    if (inOutModel.Use != "전체") sql = sql + $"AND C.Description = '{inOutModel.Use}' ";
 
                     sql = sql + $"ORDER BY UseDate;";
 
@@ -230,9 +230,9 @@ namespace InOutNote.DataBase
             }
             return returnData;
         }
-        public List<string> SelectBankCode()
+        public List<Bank> SelectBankCode()
         {
-            List<string> returnData = new List<string>();
+            List<Bank> returnData = new List<Bank>();
 
             string path = String.Format("Data Source = {0}", filePath);
 
@@ -242,16 +242,26 @@ namespace InOutNote.DataBase
                 {
                     connection.Open();
 
-                    string sql = "SELECT Code " +
-                    "FROM Bank_Code;";
+                    string sql = "SELECT A.Bank, A.Description, B.Description AS Card, A.Kind " +
+                        "FROM Bank_Code A " +
+                        "LEFT JOIN Card_Code B ON A.Bank = B.Bank; ";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     SQLiteDataReader reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        log.Info(reader["Code"].ToString());
+                        log.Info(reader["Bank"].ToString());
+                        log.Info(reader["Description"].ToString());
+                        log.Info(reader["Kind"].ToString());
+                        log.Info(reader["Card"].ToString());
 
-                        returnData.Add(reader["Code"]?.ToString()!);
+                        returnData.Add( new Bank
+                        {
+                            Name = ((long)reader["Bank"]).ToString(),
+                            Description = reader["Description"].ToString(),
+                            Kind = reader["Kind"].ToString(),
+                            Card = reader["Card"].ToString()
+                        });
                     }
                     reader.Close();
                 }
@@ -262,9 +272,9 @@ namespace InOutNote.DataBase
             }
             return returnData;
         }
-        public List<string> SelectCardCode()
+        public List<Card> SelectCardCode()
         {
-            List<string> returnData = new List<string>();
+            List<Card> returnData = new List<Card>();
 
             string path = String.Format("Data Source = {0}", filePath);
 
@@ -274,16 +284,21 @@ namespace InOutNote.DataBase
                 {
                     connection.Open();
 
-                    string sql = "SELECT Code " +
+                    string sql = "SELECT Card, Description " +
                     "FROM Card_Code;";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     SQLiteDataReader reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        log.Info(reader["Code"].ToString());
+                        log.Info(reader["Card"].ToString());
+                        log.Info(reader["Description"].ToString());
 
-                        returnData.Add(reader["Code"]?.ToString()!);
+                        returnData.Add( new Card
+                        {
+                            Name = ((long)reader["Card"]).ToString(),
+                            Description = reader["Description"]?.ToString()!
+                        });
                     }
                     reader.Close();
                 }
@@ -294,9 +309,9 @@ namespace InOutNote.DataBase
             }
             return returnData;
         }
-        public List<string> SelectUseCode()
+        public List<Use> SelectUseCode()
         {
-            List<string> returnData = new List<string>();
+            List<Use> returnData = new List<Use>();
 
             string path = String.Format("Data Source = {0}", filePath);
 
@@ -306,16 +321,21 @@ namespace InOutNote.DataBase
                 {
                     connection.Open();
 
-                    string sql = "SELECT Code " +
+                    string sql = "SELECT Use, Description " +
                     "FROM Use_Code;";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     SQLiteDataReader reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        log.Info(reader["Code"].ToString());
+                        log.Info(reader["Use"].ToString());
+                        log.Info(reader["Description"].ToString());
 
-                        returnData.Add(reader["Code"]?.ToString()!);
+                        returnData.Add( new Use
+                        {
+                            Name = ((long)reader["Use"]).ToString(),
+                            Description = reader["Description"]?.ToString()!
+                        });
                     }
                     reader.Close();
                 }

@@ -1,4 +1,6 @@
 ﻿using InOutNote.Command;
+using InOutNote.DataBase;
+using InOutNote.Models;
 using InOutNote.Notifier;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,11 @@ namespace InOutNote.ViewModels
 {
     public class CodeViewModel : INotifier
     {
+        private static IDataBaseService dataBaseService = DataBaseService.Instance;
+
+        private ObservableCollection<Bank> bankList = new ObservableCollection<Bank>();
+        private ObservableCollection<Use> useList = new ObservableCollection<Use>();
+
         private ObservableCollection<string> inOut = new ObservableCollection<string>();
         private ObservableCollection<string> kind = new ObservableCollection<string>();
         private ObservableCollection<string> bank = new ObservableCollection<string>();
@@ -23,6 +30,24 @@ namespace InOutNote.ViewModels
         private string selectedCard = "";
         private string selectedUse = "";
 
+        public ObservableCollection<Bank> BankList
+        {
+            get { return bankList;}
+            set
+            {
+                bankList = value;
+                OnPropertyChanged("BankList");
+            }
+        }
+        public ObservableCollection<Use> UseList
+        {
+            get { return useList; }
+            set
+            {
+                useList = value;
+                OnPropertyChanged("UseList");
+            }
+        }
         public ObservableCollection<string> InOut
         {
             get { return inOut; }
@@ -149,12 +174,6 @@ namespace InOutNote.ViewModels
 
         private void LoadCodeView()
         {
-            InOut = new ObservableCollection<string>();
-            InOut.Add("입금");
-            InOut.Add("출금");
-            InOut.Add("전체");
-            SelectedInOut = "전체";
-
             Kind = new ObservableCollection<string>();
             Kind.Add("신용");
             Kind.Add("체크");
@@ -162,21 +181,44 @@ namespace InOutNote.ViewModels
             Kind.Add("전체");
             SelectedKind = "전체";
 
+            List<Card> returnCard = dataBaseService.SelectCardCode();
             Card = new ObservableCollection<string>();
-            Card.Add("IBK신용카드");
-            Card.Add("국민체크카드");
+            for (int i = 0; i < returnCard.Count; i++)
+            {
+                Card.Add(returnCard[i].Description!);
+            }
             Card.Add("전체");
             SelectedCard = "전체";
 
+
+            List<Bank> returnBank = dataBaseService.SelectBankCode();
             Bank = new ObservableCollection<string>();
-            Bank.Add("국민은행");
-            Bank.Add("기업은행");
+            BankList = new ObservableCollection<Bank>();
+            for (int i = 0; i < returnBank.Count; i++)
+            {
+                Bank.Add(returnBank[i].Description!);
+                BankList.Add( new Bank
+                    {
+                        Kind = returnBank[i].Kind,
+                        Description = returnBank[i].Description,
+                        Card = returnBank[i].Card
+                    });
+            }
             Bank.Add("전체");
             SelectedBank = "전체";
 
+            List<Use> returnUse = dataBaseService.SelectUseCode();
             Use = new ObservableCollection<string>();
-            Use.Add("생활비");
-            Use.Add("가스비");
+            UseList = new ObservableCollection<Use>();
+            for (int i = 0; i < returnUse.Count; i++)
+            {
+                Use.Add(returnUse[i].Description!);
+                UseList.Add(new Use
+                {
+                    Name= returnUse[i].Name,
+                    Description= returnUse[i].Description
+                });
+            }
             Use.Add("전체");
             SelectedUse = "전체";
         }

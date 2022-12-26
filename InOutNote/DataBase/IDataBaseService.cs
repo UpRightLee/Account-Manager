@@ -13,8 +13,8 @@ namespace InOutNote.DataBase
         public List<InOutModel> SelectWeeklyInOutData();
         public List<InOutModel> SelectMonthlyInOutData();
         public List<InOutModel> SelectAllInOutData(string fromDate, string ToDate, InOutModel inOutModel);
-        public List<String> SelectBankCode();
-        public List<String> SelectCardCode();
-        public List<String> SelectUseCode();
+        public List<Bank> SelectBankCode();
+        public List<Card> SelectCardCode();
+        public List<Use> SelectUseCode();
     }
 }

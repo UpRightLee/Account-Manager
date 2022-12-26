@@ -91,12 +91,22 @@
                 <ColumnDefinition Width="0.6*"/>
                 <ColumnDefinition Width="0.4*"/>
             </Grid.ColumnDefinitions>
-            <Border BorderBrush="#000000" BorderThickness="2"/>
             <Grid Grid.Column="0">
-                <Button Content="For Managing Card/Bank Code" Style="{DynamicResource CustomButton}"/>
+                <DataGrid ItemsSource="{Binding BankList}" Style="{DynamicResource CustomGrid}" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="분류" Binding="{Binding Kind}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="은행" Binding="{Binding Description}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="카드" Binding="{Binding Card}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
             <Grid Grid.Column="1">
-                <Button Content="For Managing Use Code" Style="{DynamicResource CustomButton}"/>
+                <DataGrid ItemsSource="{Binding UseList}" Style="{DynamicResource CustomGrid}" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="번호" Binding="{Binding Name}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="용도" Binding="{Binding Description}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </Grid>
     </Grid>
