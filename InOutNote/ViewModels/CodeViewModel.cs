@@ -18,17 +18,11 @@ namespace InOutNote.ViewModels
         private ObservableCollection<Bank> bankList = new ObservableCollection<Bank>();
         private ObservableCollection<Use> useList = new ObservableCollection<Use>();
 
-        private ObservableCollection<string> inOut = new ObservableCollection<string>();
         private ObservableCollection<string> kind = new ObservableCollection<string>();
         private ObservableCollection<string> bank = new ObservableCollection<string>();
-        private ObservableCollection<string> card = new ObservableCollection<string>();
-        private ObservableCollection<string> use = new ObservableCollection<string>();
 
-        private string selectedInOut = "";
         private string selectedKind = "";
         private string selectedBank = "";
-        private string selectedCard = "";
-        private string selectedUse = "";
 
         public ObservableCollection<Bank> BankList
         {
@@ -48,15 +42,6 @@ namespace InOutNote.ViewModels
                 OnPropertyChanged("UseList");
             }
         }
-        public ObservableCollection<string> InOut
-        {
-            get { return inOut; }
-            set
-            {
-                inOut = value;
-                OnPropertyChanged("InOut");
-            }
-        }
         public ObservableCollection<string> Kind
         {
             get { return kind; }
@@ -64,15 +49,6 @@ namespace InOutNote.ViewModels
             {
                 kind = value;
                 OnPropertyChanged("Kind");
-            }
-        }
-        public ObservableCollection<string> Card
-        {
-            get { return card; }
-            set
-            {
-                card = value;
-                OnPropertyChanged("Card");
             }
         }
         public ObservableCollection<string> Bank
@@ -84,24 +60,6 @@ namespace InOutNote.ViewModels
                 OnPropertyChanged("Bank");
             }
         }
-        public ObservableCollection<string> Use
-        {
-            get { return use; }
-            set
-            {
-                use = value;
-                OnPropertyChanged("Use");
-            }
-        }
-        public string SelectedInOut
-        {
-            get { return selectedInOut; }
-            set
-            {
-                selectedInOut = value;
-                OnPropertyChanged("SelectedInOut");
-            }
-        }
         public string SelectedKind
         {
             get { return selectedKind; }
@@ -111,15 +69,6 @@ namespace InOutNote.ViewModels
                 OnPropertyChanged("SelectedKind");
             }
         }
-        public string SelectedCard
-        {
-            get { return selectedCard; }
-            set
-            {
-                selectedCard = value;
-                OnPropertyChanged("SelectedCard");
-            }
-        }
         public string SelectedBank
         {
             get { return selectedBank; }
@@ -127,15 +76,6 @@ namespace InOutNote.ViewModels
             {
                 selectedBank = value;
                 OnPropertyChanged("SelectedBank");
-            }
-        }
-        public string SelectedUse
-        {
-            get { return selectedUse; }
-            set
-            {
-                selectedUse = value;
-                OnPropertyChanged("SelectedUse");
             }
         }
         public RelayCommand LoadCodeViewCommand { get; }
@@ -169,7 +109,23 @@ namespace InOutNote.ViewModels
 
         private void SelectData()
         {
-            Console.WriteLine("Select Data Command");
+            Bank selectedBankCard = new Bank
+            {
+                Description = SelectedBank,
+                Kind = SelectedKind
+            };
+
+            List<Bank> returnBank = dataBaseService.SelectBankCardCode(selectedBankCard);  
+            BankList = new ObservableCollection<Bank>();
+            for (int i = 0; i < returnBank.Count; i++)
+            {
+                BankList.Add(new Bank
+                {
+                    Kind = returnBank[i].Kind,
+                    Description = returnBank[i].Description,
+                    Card = returnBank[i].Card
+                });
+            }
         }
 
         private void LoadCodeView()
@@ -180,16 +136,6 @@ namespace InOutNote.ViewModels
             Kind.Add("자동이체");
             Kind.Add("전체");
             SelectedKind = "전체";
-
-            List<Card> returnCard = dataBaseService.SelectCardCode();
-            Card = new ObservableCollection<string>();
-            for (int i = 0; i < returnCard.Count; i++)
-            {
-                Card.Add(returnCard[i].Description!);
-            }
-            Card.Add("전체");
-            SelectedCard = "전체";
-
 
             List<Bank> returnBank = dataBaseService.SelectBankCode();
             Bank = new ObservableCollection<string>();
@@ -208,19 +154,15 @@ namespace InOutNote.ViewModels
             SelectedBank = "전체";
 
             List<Use> returnUse = dataBaseService.SelectUseCode();
-            Use = new ObservableCollection<string>();
             UseList = new ObservableCollection<Use>();
             for (int i = 0; i < returnUse.Count; i++)
             {
-                Use.Add(returnUse[i].Description!);
                 UseList.Add(new Use
                 {
                     Name= returnUse[i].Name,
                     Description= returnUse[i].Description
                 });
             }
-            Use.Add("전체");
-            SelectedUse = "전체";
         }
     }
 }

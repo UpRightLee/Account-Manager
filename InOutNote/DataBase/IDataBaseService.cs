@@ -16,5 +16,7 @@ namespace InOutNote.DataBase
         public List<Bank> SelectBankCode();
         public List<Card> SelectCardCode();
         public List<Use> SelectUseCode();
+        public List<Bank> SelectBankCardCode(Bank bank);
+        public List<SummaryData> SelectBalanceInfo(string year);
     }
 }

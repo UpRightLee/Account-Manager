@@ -2,6 +2,7 @@
 using log4net;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
@@ -335,6 +336,105 @@ namespace InOutNote.DataBase
                         {
                             Name = ((long)reader["Use"]).ToString(),
                             Description = reader["Description"]?.ToString()!
+                        });
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+            }
+            return returnData;
+        }
+        public List<Bank> SelectBankCardCode(Bank bank)
+        {
+            List<Bank> returnData = new List<Bank>();
+
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                string inCard = bank.Card!;
+                string inKind = bank.Kind!;
+                string inDescription = bank.Description!;
+
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+                    string sql = "SELECT A.Bank, A.Description, B.Description AS Card, A.Kind " +
+                        "FROM Bank_Code A " +
+                        "LEFT JOIN Card_Code B ON A.Bank = B.Bank ";
+                    if (bank.Description == "전체") {}
+                    else
+                    {
+                        sql += $"WHERE A.Description = '{bank.Description}' ";
+                    }
+
+                    if (bank.Kind == "전체") sql += ";";
+                    else
+                    {
+                        sql += $"WHERE A.Kind = '{bank.Kind}';";
+                    }
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        log.Info(reader["Bank"].ToString());
+                        log.Info(reader["Description"].ToString());
+                        log.Info(reader["Kind"].ToString());
+                        log.Info(reader["Card"].ToString());
+
+                        returnData.Add(new Bank
+                        {
+                            Name = ((long)reader["Bank"]).ToString(),
+                            Description = reader["Description"].ToString(),
+                            Kind = reader["Kind"].ToString(),
+                            Card = reader["Card"].ToString()
+                        });
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+            }
+            return returnData;
+        }
+        public List<SummaryData> SelectBalanceInfo(string year)
+        {
+            List<SummaryData> returnData = new List<SummaryData>();
+
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+
+                    string sql = "SELECT SUM(Money) AS MONEY, strftime('%m', UseDate) AS Month, InOut " +
+                        "FROM Balance_Info " +
+                        $"WHERE strftime('%Y', UseDate) = '{year}' " +
+                        "GROUP BY InOut, strftime('%m', UseDate) " +
+                        "ORDER BY UseDate ;";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        log.Info(reader["InOut"].ToString());
+                        log.Info(reader["Money"].ToString());
+                        log.Info(reader["Month"].ToString());
+
+                        returnData.Add(new SummaryData
+                        {
+                            InOut = reader["InOut"].ToString() == "IN" ? "입금" : "출금",
+                            Money = ((long)reader["Money"]).ToString(),
+                            Month = reader["Month"].ToString(),
+                            Year = year
                         });
                     }
                     reader.Close();

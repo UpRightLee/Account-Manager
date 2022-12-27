@@ -150,5 +150,6 @@
         <Setter Property="IsReadOnly" Value="True"/>
         <Setter Property="AutoGenerateColumns" Value="False"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="RowHeaderWidth" Value="0"/>
     </Style>
 </ResourceDictionary>

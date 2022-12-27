@@ -42,19 +42,6 @@
                           ItemsSource="{Binding YearList}" SelectedItem="{Binding SelectedYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
             </Grid>
-            <Grid Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.4*"/>
-                    <ColumnDefinition Width="0.6*"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
-                    <Label Content="Month" Style="{DynamicResource CustomLabel}"/>
-                </Grid>
-                <Grid Grid.Column="1">
-                    <ComboBox Grid.Column="1" Style="{DynamicResource CustomComboBox}" 
-                          ItemsSource="{Binding MonthList}" SelectedItem="{Binding SelectedMonth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                </Grid>
-            </Grid>
             <Grid Grid.Column="2">
                 <Button Content="조회" Style="{DynamicResource CustomButton}" Command="{Binding SelectDataCommand}"/>
             </Grid>
@@ -63,7 +50,24 @@
             </Grid>
         </Grid>
         <Grid Grid.Row="1">
-            <Label Content="Total Summary" Style="{DynamicResource CustomLabel}"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.7*"/>
+                <ColumnDefinition Width="0.05*"/>
+                <ColumnDefinition Width="0.3*"/>
+            </Grid.ColumnDefinitions>
+            <DataGrid Grid.Column="0" ItemsSource="{Binding SummaryList}" Style="{DynamicResource CustomGrid}" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                    <DataGridTextColumn Header="Month" Binding="{Binding Month}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                    <DataGridTextColumn Header="월 별 자산 (원)" Binding="{Binding Money}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCellMoney}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid Grid.Column="2" ItemsSource="{Binding YearSummaryList}" Style="{DynamicResource CustomGrid}" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                    <DataGridTextColumn Header="총 자산 (원)" Binding="{Binding Money}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCellMoney}"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
     </Grid>
 </Page>
