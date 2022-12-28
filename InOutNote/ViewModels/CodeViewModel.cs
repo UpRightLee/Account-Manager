@@ -5,6 +5,7 @@ using InOutNote.Notifier;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,28 @@ namespace InOutNote.ViewModels
 
         private string selectedKind = "";
         private string selectedBank = "";
+
+        private Use? selectedRowKind;
+        private Bank? selectedRowBank;
+
+        public Bank SelectedRowBank
+        {
+            get { return selectedRowBank!; }
+            set
+            {
+                selectedRowBank = value;
+                OnPropertyChanged("SelectedRowBank");
+            }
+        }
+        public Use SelectedRowUse
+        {
+            get { return selectedRowKind!; }
+            set
+            {
+                selectedRowKind = value;
+                OnPropertyChanged("RowKind");
+            }
+        }
 
         public ObservableCollection<Bank> BankList
         {
@@ -83,6 +106,7 @@ namespace InOutNote.ViewModels
         public RelayCommand ExcelDownloadCommand { get; }
         public RelayCommand AddDataCommand { get; }
         public RelayCommand DeleteDataCommand { get; }
+        public RelayCommand UnloadCodeViewCommand { get; }
         public CodeViewModel()
         {
             LoadCodeViewCommand = new RelayCommand(LoadCodeView);
@@ -90,11 +114,22 @@ namespace InOutNote.ViewModels
             ExcelDownloadCommand = new RelayCommand(ExcelDownload);
             AddDataCommand = new RelayCommand(AddData);
             DeleteDataCommand = new RelayCommand(DeleteData);
+            UnloadCodeViewCommand = new RelayCommand(UnloadCodeView);
         }
  
         private void DeleteData()
         {
-            Console.WriteLine("Delete Data Command");
+            if (SelectedRowBank != null)
+            {
+                if (dataBaseService.DeleteBankCode(SelectedRowBank)) Debug.WriteLine("========== Delete Bank AND Card Success ==========");
+                else Debug.WriteLine("========== Delete Bank AND Card Fail ==========");
+            }
+            if (SelectedRowUse != null)
+            {
+                if (dataBaseService.DeleteUseCode(SelectedRowUse)) Debug.WriteLine("========== Delete Use Success ==========");
+                else Debug.WriteLine("========== Delete Use Fail ==========");
+            }
+            SelectData();
         }
 
         private void AddData()
@@ -124,6 +159,17 @@ namespace InOutNote.ViewModels
                     Kind = returnBank[i].Kind,
                     Description = returnBank[i].Description,
                     Card = returnBank[i].Card
+                });
+            }
+
+            List<Use> returnUse = dataBaseService.SelectUseCode();
+            UseList = new ObservableCollection<Use>();
+            for (int i = 0; i < returnUse.Count; i++)
+            {
+                UseList.Add(new Use
+                {
+                    Name = returnUse[i].Name,
+                    Description = returnUse[i].Description
                 });
             }
         }
@@ -163,6 +209,13 @@ namespace InOutNote.ViewModels
                     Description= returnUse[i].Description
                 });
             }
+        }
+        private void UnloadCodeView()
+        {
+            BankList.Clear();
+            UseList.Clear();
+            Bank.Clear();
+            Kind.Clear();
         }
     }
 }

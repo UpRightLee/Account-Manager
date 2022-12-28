@@ -17,6 +17,9 @@
         <behaviors:EventTrigger EventName="Loaded">
             <behaviors:InvokeCommandAction Command="{Binding LoadHomeViewCommand}"/>
         </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="Unloaded">
+            <behaviors:InvokeCommandAction Command="{Binding UnloadHomeViewCommand}"/>
+        </behaviors:EventTrigger>
     </behaviors:Interaction.Triggers>
     <Grid>
         <Grid.ColumnDefinitions>

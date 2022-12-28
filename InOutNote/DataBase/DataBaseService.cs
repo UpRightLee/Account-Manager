@@ -446,5 +446,118 @@ namespace InOutNote.DataBase
             }
             return returnData;
         }
+
+        public bool DeleteInOutData(InOutModel inOutData)
+        {
+            bool returnData = false;
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+
+                    string sql = "DELETE FROM Balance_Info " +
+                        "WHERE " +
+                        $"Bank = (SELECT Bank FROM Bank_Code WHERE Description = '{inOutData.Bank}') " +
+                        $"AND InOut = '{(inOutData.InOut == "입금" ? "IN" : "OUT")}' " +
+                        $"AND Money = {inOutData.Money!.Replace(",", "")} " +
+                        $"AND UseDate = '{inOutData.UseDate}' " +
+                        $"AND UseWhere = (SELECT Use FROM Use_Code WHERE Description = '{inOutData.Use}');";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    returnData = command.ExecuteNonQuery() > 0;
+                }
+                if (returnData) return true;
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+                return false;
+            }
+            
+        }
+
+        public bool DeleteBankCode(Bank bank)
+        {
+            bool returnData = false;
+            bool returnData2 = false;
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+
+                    if (bank.Kind == "자동이체")
+                    {
+                        string sql = "DELETE FROM Bank_Code " +
+                        "WHERE " +
+                        $"Description = '{bank.Description}' " +
+                        $"AND Kind = '{bank.Kind}';";
+
+                        SQLiteCommand command = new SQLiteCommand(sql, connection);
+                        returnData = command.ExecuteNonQuery() > 0;
+                        returnData2 = true;
+                    }
+                    else
+                    {
+                        string sql = "DELETE FROM Card_Code " +
+                        "WHERE " +
+                        $"Description = '{bank.Card}';";
+
+                        string sql2 = "DELETE FROM Bank_Code " +
+                        "WHERE " +
+                        $"Description = '{bank.Description}' " +
+                        $"AND Kind = '{bank.Kind}';";
+
+                        SQLiteCommand command = new SQLiteCommand(sql, connection);
+                        SQLiteCommand command2 = new SQLiteCommand(sql2, connection);
+
+                        returnData = command.ExecuteNonQuery() > 0;
+                        returnData2 = command2.ExecuteNonQuery() > 0;
+                    }
+                    
+                }
+                if (returnData && returnData2) return true;
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+                return false;
+            }
+        }
+
+        public bool DeleteUseCode(Use use)
+        {
+            bool returnData = false;
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+
+                    string sql = "DELETE FROM Use_Code " +
+                        "WHERE " +
+                        $"Description = '{use.Description}';";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    returnData = command.ExecuteNonQuery() > 0;
+                }
+                if (returnData) return true;
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+                return false;
+            }
+        }
     }
 }

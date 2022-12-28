@@ -120,7 +120,7 @@ namespace InOutNote.ViewModels
                     });
                 }
 
-                SummaryList[i].Money = String.Format("{0:#,###}", int.Parse(SummaryList[i]?.Money!));
+                SummaryList[i].Money = String.Format("{0:#,###}", int.Parse(SummaryList[i].Money!));
             }
             if (YearSummaryList.Count > 0) yearSummaryList[0].Money = String.Format("{0:#,###}", int.Parse(yearSummaryList[0]?.Money!));
         }

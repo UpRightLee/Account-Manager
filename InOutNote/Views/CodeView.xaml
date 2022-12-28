@@ -16,6 +16,9 @@
         <behaviors:EventTrigger EventName="Loaded">
             <behaviors:InvokeCommandAction Command="{Binding LoadCodeViewCommand}"/>
         </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="Unloaded">
+            <behaviors:InvokeCommandAction Command="{Binding UnloadCodeViewCommand}"/>
+        </behaviors:EventTrigger>
     </behaviors:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
@@ -74,7 +77,7 @@
                 <ColumnDefinition Width="0.4*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
-                <DataGrid ItemsSource="{Binding BankList}" Style="{DynamicResource CustomGrid}" >
+                <DataGrid ItemsSource="{Binding BankList}" Style="{DynamicResource CustomGrid}" SelectedItem="{Binding SelectedRowBank, Mode=TwoWay}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="분류" Binding="{Binding Kind}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                         <DataGridTextColumn Header="은행" Binding="{Binding Description}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
@@ -83,7 +86,7 @@
                 </DataGrid>
             </Grid>
             <Grid Grid.Column="1">
-                <DataGrid ItemsSource="{Binding UseList}" Style="{DynamicResource CustomGrid}" >
+                <DataGrid ItemsSource="{Binding UseList}" Style="{DynamicResource CustomGrid}" SelectedItem="{Binding SelectedRowUse, Mode=TwoWay}" >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="번호" Binding="{Binding Name}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                         <DataGridTextColumn Header="용도" Binding="{Binding Description}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>

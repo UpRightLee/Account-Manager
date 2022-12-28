@@ -5,6 +5,7 @@ using InOutNote.Notifier;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,8 @@ namespace InOutNote.ViewModels
         private string selectedCard = "";
         private string selectedUse = "";
 
+        private InOutModel selectedInOutData= new InOutModel();
+
         public DateTime SelectedFromDate
         {
             get { return selectedFromDate; }
@@ -50,7 +53,15 @@ namespace InOutNote.ViewModels
                 OnPropertyChanged("SelectedToDate");
             }
         }
-
+        public InOutModel SelectedInOutData
+        {
+            get { return selectedInOutData; }
+            set
+            {
+                selectedInOutData = value;
+                OnPropertyChanged("SelectedInOutData");
+            }
+        }
         public ObservableCollection<InOutModel> InOutList
         {
             get { return inOutList; }
@@ -156,6 +167,7 @@ namespace InOutNote.ViewModels
         public RelayCommand ExcelDownloadCommand { get; }
         public RelayCommand AddDataCommand { get; }
         public RelayCommand DeleteDataCommand { get; }
+        public RelayCommand UnloadInOutViewCommand { get; }
 
         public InOutViewModel()
         {
@@ -164,11 +176,15 @@ namespace InOutNote.ViewModels
             ExcelDownloadCommand = new RelayCommand(ExcelDownload);
             AddDataCommand = new RelayCommand(AddData);
             DeleteDataCommand = new RelayCommand(DeleteData);
+            UnloadInOutViewCommand = new RelayCommand(UnloadInOutView);
         }
 
         private void DeleteData()
         {
-            Console.WriteLine("Delete Data Command");
+            if (dataBaseService.DeleteInOutData(SelectedInOutData)) Debug.WriteLine("========== Delete Success ==========");
+            else Debug.WriteLine("========== Delete Fail ==========");
+
+            SelectData();
         }
 
         private void AddData()
@@ -202,7 +218,7 @@ namespace InOutNote.ViewModels
                     new InOutModel
                     {
                         InOut = returnInOutData[i].InOut,
-                        Money = String.Format("{0:#,###}", int.Parse(returnInOutData[i]?.Money!)),
+                        Money = String.Format("{0:#,###}", int.Parse(returnInOutData[i].Money!)),
                         Kind = returnInOutData[i].Kind,
                         Use = returnInOutData[i].Use,
                         Bank = returnInOutData[i].Bank,
@@ -278,7 +294,7 @@ namespace InOutNote.ViewModels
                     new InOutModel 
                     { 
                         InOut = returnInOutData[i].InOut, 
-                        Money = String.Format("{0:#,###}", int.Parse(returnInOutData[i]?.Money!)),
+                        Money = String.Format("{0:#,###}", int.Parse(returnInOutData[i].Money!)),
                         Kind = returnInOutData[i].Kind,
                         Use = returnInOutData[i].Use,
                         Bank= returnInOutData[i].Bank,
@@ -287,6 +303,14 @@ namespace InOutNote.ViewModels
                         Detail = returnInOutData[i].Detail
                     });
             }
+        }
+        public void UnloadInOutView()
+        {
+            InOutList.Clear();
+            InOut.Clear();
+            Use.Clear();
+            Bank.Clear();
+            Card.Clear();
         }
     }
 }

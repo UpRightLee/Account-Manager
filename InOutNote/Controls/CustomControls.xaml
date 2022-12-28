@@ -127,20 +127,34 @@
     <Style x:Key="CustomDataGridColunmCell" TargetType="DataGridCell">
         <Setter Property="Background" Value="#FEFEFE"/>
         <Setter Property="Foreground" Value="#111111"/>
-        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="FontSize" Value="22"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="TextBlock.TextAlignment" Value="Center"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="#111111"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected"
+                        Value="True">
+                <Setter Property="Background"
+                        Value="LightBlue" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style x:Key="CustomDataGridColunmCellMoney" TargetType="DataGridCell">
         <Setter Property="Background" Value="#FEFEFE"/>
         <Setter Property="Foreground" Value="#111111"/>
-        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="FontSize" Value="22"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="TextBlock.TextAlignment" Value="Right"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="#111111"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected"
+                        Value="True">
+                <Setter Property="Background"
+                        Value="LightBlue" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style x:Key="CustomGrid" TargetType="DataGrid">
         <Setter Property="ColumnWidth" Value="*"/>
@@ -151,5 +165,7 @@
         <Setter Property="AutoGenerateColumns" Value="False"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="RowHeaderWidth" Value="0"/>
+        <Setter Property="SelectionUnit" Value="FullRow"/>
+        <Setter Property="SelectionMode" Value="Extended"/>
     </Style>
 </ResourceDictionary>

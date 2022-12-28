@@ -18,5 +18,9 @@ namespace InOutNote.DataBase
         public List<Use> SelectUseCode();
         public List<Bank> SelectBankCardCode(Bank bank);
         public List<SummaryData> SelectBalanceInfo(string year);
+
+        public bool DeleteInOutData(InOutModel inOutData);
+        public bool DeleteBankCode(Bank bank);
+        public bool DeleteUseCode(Use use);
     }
 }

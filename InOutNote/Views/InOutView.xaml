@@ -16,6 +16,9 @@
         <behaviors:EventTrigger EventName="Loaded">
             <behaviors:InvokeCommandAction Command="{Binding LoadInOutViewCommand}"/>
         </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="Unloaded">
+            <behaviors:InvokeCommandAction Command="{Binding UnloadInOutViewCommand}"/>
+        </behaviors:EventTrigger>
     </behaviors:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
@@ -111,7 +114,7 @@
         </Grid>
         <Grid Grid.Row="1" Background="#e2e2e2">
             <Grid>
-                <DataGrid ItemsSource="{Binding InOutList}" Style="{DynamicResource CustomGrid}" >
+                <DataGrid ItemsSource="{Binding InOutList}" Style="{DynamicResource CustomGrid}" SelectedItem="{Binding SelectedInOutData}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="날짜" Binding="{Binding UseDate}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                         <DataGridTextColumn Header="입출" Binding="{Binding InOut}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
