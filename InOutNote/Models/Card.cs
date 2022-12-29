@@ -10,5 +10,6 @@ namespace InOutNote.Models
     {
         public string? Name { get; set; }
         public string? Description { get; set; }
+        public string? Bank { get; set; }
     }
 }

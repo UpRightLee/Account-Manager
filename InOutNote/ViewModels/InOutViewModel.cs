@@ -2,6 +2,7 @@
 using InOutNote.DataBase;
 using InOutNote.Models;
 using InOutNote.Notifier;
+using InOutNote.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -189,7 +190,9 @@ namespace InOutNote.ViewModels
 
         private void AddData()
         {
-            Console.WriteLine("Add Data Command");
+            AddInOutView addInOutView= new AddInOutView();
+            addInOutView.Show();
+            Debug.WriteLine("Add Data Command");
         }
 
         private void ExcelDownload()

@@ -285,7 +285,7 @@ namespace InOutNote.DataBase
                 {
                     connection.Open();
 
-                    string sql = "SELECT Card, Description " +
+                    string sql = "SELECT Card, Description, Bank " +
                     "FROM Card_Code;";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
@@ -294,11 +294,12 @@ namespace InOutNote.DataBase
                     {
                         log.Info(reader["Card"].ToString());
                         log.Info(reader["Description"].ToString());
-
+                        log.Info(reader["Bank"].ToString());
                         returnData.Add( new Card
                         {
                             Name = ((long)reader["Card"]).ToString(),
-                            Description = reader["Description"]?.ToString()!
+                            Description = reader["Description"]?.ToString()!,
+                            Bank = ((long)reader["Bank"]).ToString()
                         });
                     }
                     reader.Close();
