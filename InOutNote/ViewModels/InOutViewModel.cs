@@ -3,6 +3,7 @@ using InOutNote.DataBase;
 using InOutNote.Models;
 using InOutNote.Notifier;
 using InOutNote.Views;
+using InOutNote.WindowManage;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,6 +20,8 @@ namespace InOutNote.ViewModels
         private DateTime selectedToDate;
 
         private static IDataBaseService dataBaseService = DataBaseService.Instance;
+        private static IWindowService windowService = WindowService.Instance;
+        private static IMessageBoxService messageBoxService = MessageBoxService.Instance;
 
         private ObservableCollection<InOutModel> inOutList = new ObservableCollection<InOutModel>();
 
@@ -134,6 +137,7 @@ namespace InOutNote.ViewModels
             {
                 selectedKind = value;
                 OnPropertyChanged("SelectedKind");
+                IsChangedKind();
             }
         }
         public string SelectedCard
@@ -152,6 +156,7 @@ namespace InOutNote.ViewModels
             {
                 selectedBank = value;
                 OnPropertyChanged("SelectedBank");
+                IsChangedBank();
             }
         }
         public string SelectedUse
@@ -182,17 +187,20 @@ namespace InOutNote.ViewModels
 
         private void DeleteData()
         {
-            if (dataBaseService.DeleteInOutData(SelectedInOutData)) Debug.WriteLine("========== Delete Success ==========");
-            else Debug.WriteLine("========== Delete Fail ==========");
+            if (SelectedInOutData.InOut == null)
+            {
+                messageBoxService.ShowMessageBox("데이터를 선택해주세요");
+                return;
+            }
+            if (dataBaseService.DeleteInOutData(SelectedInOutData)) messageBoxService.ShowMessageBox("========== Delete Success ==========");
+            else messageBoxService.ShowMessageBox("========== Delete Fail ==========");
 
             SelectData();
         }
 
         private void AddData()
         {
-            AddInOutView addInOutView= new AddInOutView();
-            addInOutView.Show();
-            Debug.WriteLine("Add Data Command");
+            windowService.ShowAddInoutView();
         }
 
         private void ExcelDownload()
@@ -254,17 +262,16 @@ namespace InOutNote.ViewModels
             Card = new ObservableCollection<string>();
             for (int i = 0; i < returnCard.Count; i++)
             {
-                Card.Add(returnCard[i].Description!);
+                if (returnCard[i].Description != "") Card.Add(returnCard[i].Description!);
             }
             Card.Add("전체");
             SelectedCard = "전체";
-
-            
+        
             List<Bank> returnBank = dataBaseService.SelectBankCode();
             Bank = new ObservableCollection<string>();
             for (int i = 0; i < returnBank.Count; i++)
             {
-                Bank.Add(returnBank[i].Description!);
+                if (!Bank.Contains(returnBank[i].Description!)) Bank.Add(returnBank[i].Description!);
             }
             Bank.Add("전체");
             SelectedBank = "전체";
@@ -314,6 +321,90 @@ namespace InOutNote.ViewModels
             Use.Clear();
             Bank.Clear();
             Card.Clear();
+        }
+        private void IsChangedKind()
+        {
+            if (SelectedKind == "전체")
+            {
+                List<Card> returnCard = dataBaseService.SelectCardCode();
+                Card = new ObservableCollection<string>();
+                for (int i = 0; i < returnCard.Count; i++)
+                {
+                    if (returnCard[i].Description != "") Card.Add(returnCard[i].Description!);
+                }
+                Card.Add("전체");
+                SelectedCard = "전체";
+
+                List<Bank> returnBank = dataBaseService.SelectBankCode();
+                Bank = new ObservableCollection<string>();
+                for (int i = 0; i < returnBank.Count; i++)
+                {
+                    if (!Bank.Contains(returnBank[i].Description!)) Bank.Add(returnBank[i].Description!);
+                }
+                Bank.Add("전체");
+                SelectedBank = "전체";  
+            }
+            else
+            {
+                List<Bank> returnBank = dataBaseService.SelectBankCode();
+                Bank = new ObservableCollection<string>();
+                List<Card> returnCard = dataBaseService.SelectCardCode();
+                Card = new ObservableCollection<string>();
+
+                for (int i = 0; i < returnBank.Count; i++)
+                {
+                    if (returnBank[i].Kind == SelectedKind)
+                    {
+                        if (!Bank.Contains(returnBank[i].Description!)) Bank.Add(returnBank[i].Description!);
+                        for (int k = 0; k < returnCard.Count; k++)
+                        {
+                            if (returnCard[k].Description == "") { }
+                            else
+                            {
+                                if ((returnBank[i].Name == returnCard[k].Bank) && !Card.Contains(returnCard[k].Description!)) Card.Add(returnCard[k].Description!);
+                            }
+
+                        }
+                    }
+                }
+                Bank.Add("전체");
+                SelectedBank = "전체";
+
+                if (!Card.Contains("전체")) Card.Add("전체");
+                SelectedCard = "전체";
+            }
+        }
+        private void IsChangedBank()
+        {
+            if (SelectedBank == "전체") 
+            {
+                List<Card> returnCard = dataBaseService.SelectCardCode();
+                Card = new ObservableCollection<string>();
+                for (int i = 0; i < returnCard.Count; i++)
+                {
+                    if (returnCard[i].Description != "") Card.Add(returnCard[i].Description!);
+                }
+                if (!Card.Contains("전체")) Card.Add("전체");
+                SelectedCard = "전체";
+            }
+            else
+            {
+                Bank selectedBankCard = new Bank
+                {
+                    Description = SelectedBank,
+                    Kind = SelectedKind
+                };
+
+                List<Bank> returnBank = dataBaseService.SelectBankCardCode(selectedBankCard);
+                Card = new ObservableCollection<string>();
+
+                for (int i = 0; i < returnBank.Count; i++)
+                {
+                    if (returnBank[i].Card != "") Card.Add(returnBank[i].Card!);
+                }
+                Card.Add("전체");
+                SelectedCard = "전체";
+            }  
         }
     }
 }

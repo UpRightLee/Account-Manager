@@ -92,11 +92,11 @@
                     <ColumnDefinition Width="0.4*"/>
                     <ColumnDefinition Width="0.05*"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Content="카드" Style="{DynamicResource CustomLabel}"/>
-                <ComboBox Grid.Column="1" Style="{DynamicResource CustomComboBox}"
-                          ItemsSource="{Binding Card}" SelectedItem="{Binding SelectedCard, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Label Grid.Column="3" Content="은행" Style="{DynamicResource CustomLabel}"/>
+                <Label Grid.Column="3" Content="카드" Style="{DynamicResource CustomLabel}"/>
                 <ComboBox Grid.Column="4" Style="{DynamicResource CustomComboBox}"
+                          ItemsSource="{Binding Card}" SelectedItem="{Binding SelectedCard, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="0" Content="은행" Style="{DynamicResource CustomLabel}"/>
+                <ComboBox Grid.Column="1" Style="{DynamicResource CustomComboBox}"
                           ItemsSource="{Binding Bank}" SelectedItem="{Binding SelectedBank, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
             <Grid Grid.Column="2" Grid.Row="1">

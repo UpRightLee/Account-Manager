@@ -22,5 +22,9 @@ namespace InOutNote.DataBase
         public bool DeleteInOutData(InOutModel inOutData);
         public bool DeleteBankCode(Bank bank);
         public bool DeleteUseCode(Use use);
+
+        public bool InsertInOutData(InOutModel inOutData);
+        public bool InsertBankCardCode(string kind, string bank, string card);
+        public bool InsertUseCode(string use);
     }
 }

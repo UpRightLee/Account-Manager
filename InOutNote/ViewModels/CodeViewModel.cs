@@ -2,6 +2,7 @@
 using InOutNote.DataBase;
 using InOutNote.Models;
 using InOutNote.Notifier;
+using InOutNote.WindowManage;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,6 +16,8 @@ namespace InOutNote.ViewModels
     public class CodeViewModel : INotifier
     {
         private static IDataBaseService dataBaseService = DataBaseService.Instance;
+        private static IWindowService windowService = WindowService.Instance;
+        private static IMessageBoxService messageBoxService = MessageBoxService.Instance;
 
         private ObservableCollection<Bank> bankList = new ObservableCollection<Bank>();
         private ObservableCollection<Use> useList = new ObservableCollection<Use>();
@@ -24,10 +27,31 @@ namespace InOutNote.ViewModels
 
         private string selectedKind = "";
         private string selectedBank = "";
+        private string selectedBankOrKind = "";
 
         private Use? selectedRowKind;
         private Bank? selectedRowBank;
 
+        private ObservableCollection<string> bankOrKind = new ObservableCollection<string>();
+
+        public ObservableCollection<string> BankOrKind
+        {
+            get { return bankOrKind; }
+            set
+            {
+                bankOrKind = value;
+                OnPropertyChanged("BankOrKind");
+            }
+        }
+        public string SelectedBankOrKind
+        {
+            get { return selectedBankOrKind; }
+            set
+            {
+                selectedBankOrKind = value;
+                OnPropertyChanged("SelectedBankOrKind");
+            }
+        }
         public Bank SelectedRowBank
         {
             get { return selectedRowBank!; }
@@ -90,6 +114,7 @@ namespace InOutNote.ViewModels
             {
                 selectedKind = value;
                 OnPropertyChanged("SelectedKind");
+                IsChangedKind();
             }
         }
         public string SelectedBank
@@ -121,20 +146,21 @@ namespace InOutNote.ViewModels
         {
             if (SelectedRowBank != null)
             {
-                if (dataBaseService.DeleteBankCode(SelectedRowBank)) Debug.WriteLine("========== Delete Bank AND Card Success ==========");
-                else Debug.WriteLine("========== Delete Bank AND Card Fail ==========");
+                if (dataBaseService.DeleteBankCode(SelectedRowBank)) messageBoxService.ShowMessageBox("========== Delete Bank AND Card Success ==========");
+                else messageBoxService.ShowMessageBox("========== Delete Bank AND Card Fail ==========");
             }
             if (SelectedRowUse != null)
             {
-                if (dataBaseService.DeleteUseCode(SelectedRowUse)) Debug.WriteLine("========== Delete Use Success ==========");
-                else Debug.WriteLine("========== Delete Use Fail ==========");
+                if (dataBaseService.DeleteUseCode(SelectedRowUse)) messageBoxService.ShowMessageBox("========== Delete Use Success ==========");
+                else messageBoxService.ShowMessageBox("========== Delete Use Fail ==========");
             }
             SelectData();
         }
 
         private void AddData()
         {
-            Console.WriteLine("Add Data Command");
+            if (SelectedBankOrKind == "은행 및 카드") windowService.ShowAddBankCardCodeView();
+            else windowService.ShowAddUseCodeView();
         }
 
         private void ExcelDownload()
@@ -176,6 +202,11 @@ namespace InOutNote.ViewModels
 
         private void LoadCodeView()
         {
+            BankOrKind = new ObservableCollection<string>();
+            BankOrKind.Add("은행 및 카드");
+            BankOrKind.Add("용도");
+            SelectedBankOrKind = "은행 및 카드";
+
             Kind = new ObservableCollection<string>();
             Kind.Add("신용");
             Kind.Add("체크");
@@ -188,7 +219,7 @@ namespace InOutNote.ViewModels
             BankList = new ObservableCollection<Bank>();
             for (int i = 0; i < returnBank.Count; i++)
             {
-                Bank.Add(returnBank[i].Description!);
+                if (!Bank.Contains(returnBank[i].Description!)) Bank.Add(returnBank[i].Description!);
                 BankList.Add( new Bank
                     {
                         Kind = returnBank[i].Kind,
@@ -216,6 +247,22 @@ namespace InOutNote.ViewModels
             UseList.Clear();
             Bank.Clear();
             Kind.Clear();
+        }
+        private void IsChangedKind()
+        {
+            List<Bank> returnBank = dataBaseService.SelectBankCode();
+            Bank = new ObservableCollection<string>();
+
+            for (int i = 0; i < returnBank.Count; i++)
+            {
+                if (SelectedKind == "전체") if (!Bank.Contains(returnBank[i].Description!)) Bank.Add(returnBank[i].Description!);
+                else if (returnBank[i].Kind == SelectedKind)
+                {
+                    if (!Bank.Contains(returnBank[i].Description!)) Bank.Add(returnBank[i].Description!);
+                }
+            }
+            Bank.Add("전체");
+            SelectedBank = "전체";
         }
     }
 }

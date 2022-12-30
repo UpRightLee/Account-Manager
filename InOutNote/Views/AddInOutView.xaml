@@ -77,7 +77,8 @@
         </Grid>
         <Grid Grid.Column="1" Grid.Row="4">
             <ComboBox Style="{DynamicResource CustomAddComboBox}" ItemsSource="{Binding Card}" Margin="3"
-                      SelectedItem="{Binding SelectedCard, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                      SelectedItem="{Binding SelectedCard, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      IsEnabled="{Binding IsCardEnabled, Mode=TwoWay}"/>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="5">
             <ComboBox Style="{DynamicResource CustomAddComboBox}" ItemsSource="{Binding Use}" Margin="3"

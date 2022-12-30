@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -46,7 +47,7 @@ namespace InOutNote.DataBase
                     string sql = "CREATE TABLE IF NOT EXISTS Balance_Info ( " +
                         "InOut TEXT NOT NULL, " +
                         "Money INTEGER NOT NULL, " +
-                        "UseDate INTEGER, " +
+                        "UseDate TEXT, " +
                         "Bank  INTEGER, " +
                         "Card  INTEGER, " +
                         "UseWhere  INTEGER NOT NULL, " +
@@ -54,18 +55,19 @@ namespace InOutNote.DataBase
 
                     string sql2 = "CREATE TABLE IF NOT EXISTS Bank_Code (" +
                         "Bank INTEGER NOT NULL, " +
-                        "Code TEXT NOT NULL, " +
+                        "Description TEXT NOT NULL, " +
                         "Kind TEXT, " +
                         "PRIMARY KEY(Bank) );";
 
                     string sql3 = "CREATE TABLE Card_Code(" +
                         "Card  INTEGER NOT NULL, " +
-                        "Code TEXT NOT NULL, " +
-                        "PRIMARY KEY(Card) );";
+                        "Description TEXT NOT NULL, " +
+                        "PRIMARY KEY(Card) " +
+                        "FOREIGN KEY(Bank) REFERENCES Bank_Code(Bank));";
 
                     string sql4 = "CREATE TABLE Use_Code(" +
                         "Use INTEGER NOT NULL, " +
-                        "Code TEXT NOT NULL, " +
+                        "Description TEXT NOT NULL, " +
                         "PRIMARY KEY(Use) );";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
@@ -375,7 +377,8 @@ namespace InOutNote.DataBase
                     if (bank.Kind == "전체") sql += ";";
                     else
                     {
-                        sql += $"WHERE A.Kind = '{bank.Kind}';";
+                        if (bank.Description == "전체") sql += $"WHERE A.Kind = '{bank.Kind}';";
+                        else sql += $"AND A.Kind = '{bank.Kind}';";
                     }
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
@@ -480,7 +483,6 @@ namespace InOutNote.DataBase
             }
             
         }
-
         public bool DeleteBankCode(Bank bank)
         {
             bool returnData = false;
@@ -532,7 +534,6 @@ namespace InOutNote.DataBase
                 return false;
             }
         }
-
         public bool DeleteUseCode(Use use)
         {
             bool returnData = false;
@@ -547,6 +548,163 @@ namespace InOutNote.DataBase
                     string sql = "DELETE FROM Use_Code " +
                         "WHERE " +
                         $"Description = '{use.Description}';";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    returnData = command.ExecuteNonQuery() > 0;
+                }
+                if (returnData) return true;
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+                return false;
+            }
+        }
+
+        public bool InsertInOutData(InOutModel inOutData)
+        {
+            bool returnData = false;
+            string path = String.Format("Data Source = {0}", filePath);
+
+            string inOut = inOutData.InOut == "출금" ? "OUT" : "IN";
+            string money = inOutData.Money!;
+            string bank = inOutData.Bank!;
+            string useDate = inOutData.UseDate!;
+            string card = inOutData.Card!;
+            string use = inOutData.Use!;
+            string detail = inOutData.Detail!;
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+                    string sql = "";
+                    if (card != null)
+                    {
+                        sql = "INSERT INTO Balance_Info " +
+                        " (InOut, Money, UseDate, Bank, Card, UseWhere, Detail ) " +
+                        "VALUES " +
+                        $"('{inOut}', " +
+                        $"{money}, " +
+                        $"'{useDate}', " +
+                        $"(SELECT Bank FROM Bank_Code WHERE Bank_Code.Description = '{bank}' AND Bank_Code.Bank = (SELECT Bank FROM Card_Code WHERE Card_Code.Description = '{card}')), " +
+                        $"(SELECT Card FROM Card_Code WHERE Card_Code.Description = '{card}'), " +
+                        $"(SELECT Use FROM Use_Code WHERE Use_Code.Description = '{use}'), " +
+                        $"'{detail}'); ";
+                    }
+                    else
+                    {
+                        sql = "INSERT INTO Balance_Info " +
+                        " (InOut, Money, UseDate, Bank, UseWhere, Detail ) " +
+                        "VALUES " +
+                        $"('{inOut}', " +
+                        $"{money}, " +
+                        $"'{useDate}', " +
+                        $"(SELECT Bank FROM Bank_Code WHERE Bank_Code.Description = '{bank}'), " +
+                        $"(SELECT Use FROM Use_Code WHERE Use_Code.Description = '{use}'), " +
+                        $"'{detail}'); ";
+                    }
+
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    returnData = command.ExecuteNonQuery() > 0;
+                }
+                if (returnData) return true;
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+                return false;
+            }
+        }
+        public bool InsertBankCardCode(string kind, string bank, string card)
+        {
+            bool returnData = false;
+            bool returnData2 = false;
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+                    string sql = "";
+
+                    if (card == null)
+                    {
+                        sql = "INSERT INTO Bank_Code " +
+                            "(Description, Kind) " +
+                            "VALUES " +
+                            $"('{bank}', '{kind}');";
+
+                        SQLiteCommand command = new SQLiteCommand(sql, connection);
+                        returnData = command.ExecuteNonQuery() > 0;
+                        returnData2 = true;
+                    }
+                    else
+                    {
+                        sql = "INSERT INTO Bank_Code " +
+                            "(Description, Kind) " +
+                            "VALUES " +
+                            $"('{bank}', '{kind}');";
+
+                        SQLiteCommand command = new SQLiteCommand(sql, connection);
+                        returnData = command.ExecuteNonQuery() > 0;
+
+                        int bankNumber = 0;
+
+                        if (returnData)
+                        {
+                            sql = "SELECT Bank " +
+                                "FROM Bank_Code " +
+                                $"WHERE Description = '{bank}' " +
+                                $"AND Kind = '{kind}';";
+                            command = new SQLiteCommand(sql, connection);
+                            
+                            SQLiteDataReader reader = command.ExecuteReader();
+                            while (reader.Read())
+                            {
+                                log.Info(reader["Bank"].ToString());
+                                bankNumber = (int)(long)reader["Bank"];
+                            }
+                            reader.Close();
+
+                        }
+                        string sql2 = "INSERT INTO Card_Code " +
+                            "(Description, Bank) " +
+                            "VALUES " +
+                            $"('{card}', {bankNumber});";
+
+                        
+                        SQLiteCommand command2 = new SQLiteCommand(sql2, connection);
+                        returnData2 = command2.ExecuteNonQuery() > 0;
+                    }
+                }
+                if (returnData && returnData2) return true;
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+                return false;
+            }
+        }
+        public bool InsertUseCode(string use)
+        {
+            bool returnData = false;
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+                    string sql = "INSERT INTO Use_Code " +
+                            "(Description) " +
+                            "VALUES " +
+                            $"('{use}');";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     returnData = command.ExecuteNonQuery() > 0;

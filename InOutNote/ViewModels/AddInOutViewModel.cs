@@ -2,12 +2,14 @@
 using InOutNote.DataBase;
 using InOutNote.Models;
 using InOutNote.Notifier;
+using InOutNote.WindowManage;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace InOutNote.ViewModels
 {
@@ -16,6 +18,8 @@ namespace InOutNote.ViewModels
         private DateTime selectedDate;
 
         private static IDataBaseService dataBaseService = DataBaseService.Instance;
+        private static IWindowService windowService = WindowService.Instance;
+        private static IMessageBoxService messageBoxService = MessageBoxService.Instance;
 
         private ObservableCollection<string> inOut = new ObservableCollection<string>();
         private ObservableCollection<string> kind = new ObservableCollection<string>();
@@ -30,6 +34,7 @@ namespace InOutNote.ViewModels
         private string selectedUse = "";
         private string selectedMoney = "";
         private string selectedDetail = "";
+        private bool isCardEnabled = false;
         public DateTime SelectedDate
         {
             get { return selectedDate; }
@@ -37,6 +42,15 @@ namespace InOutNote.ViewModels
             {
                 selectedDate = value;
                 OnPropertyChanged("SelectedDate");
+            }
+        }
+        public bool IsCardEnabled
+        {
+            get { return isCardEnabled; }
+            set
+            {
+                isCardEnabled = value;
+                OnPropertyChanged("IsCardEnabled");
             }
         }
         public ObservableCollection<string> InOut
@@ -119,6 +133,7 @@ namespace InOutNote.ViewModels
             {
                 selectedBank = value;
                 OnPropertyChanged("SelectedBank");
+                IsChangedBank();
             }
         }
         public string SelectedUse
@@ -191,18 +206,30 @@ namespace InOutNote.ViewModels
             Use.Clear();
             Bank.Clear();
             Card.Clear();
+
+            windowService.CloseAddInoutView();
         }
 
         private void AddData()
         {
-            throw new NotImplementedException();
+            InOutModel inOutData = new InOutModel
+            {
+                InOut = SelectedInOut,
+                Bank = SelectedBank,
+                Card = SelectedCard,
+                UseDate = SelectedDate.ToString("yyyy-MM-dd"),
+                Money = SelectedMoney,
+                Use = SelectedUse,
+                Detail = SelectedDetail
+            };
+            if (dataBaseService.InsertInOutData(inOutData)) messageBoxService.ShowMessageBox("Insert Data Success");
+            else messageBoxService.ShowMessageBox("Insert Failed");
         }
-
         private void CancelData()
         {
-            throw new NotImplementedException();
+            windowService.CloseAddInoutView();
         }
-        public void IsChangedKind()
+        private void IsChangedKind()
         {
             List<Bank> returnBank = dataBaseService.SelectBankCode();
             Bank = new ObservableCollection<string>();
@@ -213,15 +240,42 @@ namespace InOutNote.ViewModels
             {
                 if (returnBank[i].Kind == SelectedKind)
                 {
-                    Bank.Add(returnBank[i].Description!);
+                    if (!Bank.Contains(returnBank[i].Description!)) Bank.Add(returnBank[i].Description!);
                     for (int k = 0; k < returnCard.Count; k++)
                     {
-                        if (returnBank[i].Name == returnCard[k].Bank) Card.Add(returnCard[k].Description!);
+                        if ((returnBank[i].Name == returnCard[k].Bank) && !Card.Contains(returnCard[k].Description!)) Card.Add(returnCard[k].Description!);
                     }
                 }
             }
             if (Bank.Count > 0) SelectedBank = Bank[0];
-            if (Card.Count > 0) SelectedCard = Card[0];
+            if (Card.Count > 0)
+            {
+                IsCardEnabled = true;
+                SelectedCard = Card[0];
+            }
+            else IsCardEnabled = false;
+        }
+        private void IsChangedBank()
+        {
+            Bank selectedBankCard = new Bank
+            {
+                Description = SelectedBank,
+                Kind = SelectedKind
+            };
+
+            List<Bank> returnBank = dataBaseService.SelectBankCardCode(selectedBankCard);
+            Card = new ObservableCollection<string>();
+
+            for (int i = 0; i < returnBank.Count; i++)
+            {
+                if (returnBank[i].Card != "") Card.Add(returnBank[i].Card!);
+            }
+            if (Card.Count > 0)
+            {
+                IsCardEnabled = true;
+                SelectedCard = Card[0];
+            }
+            else IsCardEnabled = false;
         }
     }
 }

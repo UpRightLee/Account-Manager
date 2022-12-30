@@ -1,0 +1,58 @@
+﻿<Window x:Class="InOutNote.Views.AddUseCodeView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:InOutNote.ViewModels"
+        xmlns:local="clr-namespace:InOutNote.Views"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        Title="코드 추가" Height="200" Width="400">
+    <Window.DataContext>
+        <vm:AddUseCodeViewModel/>
+    </Window.DataContext>
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="Loaded">
+            <behaviors:InvokeCommandAction Command="{Binding LoadAddUseViewCommand}"/>
+        </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="Unloaded">
+            <behaviors:InvokeCommandAction Command="{Binding UnloadAddUseViewCommand}"/>
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="0.7*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Label Content="용도 추가" Style="{DynamicResource CustomAddLabel}" Margin="3"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.4*"/>
+                <ColumnDefinition Width="0.6*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="0.2*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Column="0" Grid.Row="0">
+                <Label Content="용도" Style="{DynamicResource CustomAddLabel}" Margin="3"/>
+            </Grid>
+            <Grid Grid.Column="1" Grid.Row="0">
+                <TextBox Style="{DynamicResource CustomText}" Margin="3"
+                Text="{Binding SelectedUse, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+            <Grid Grid.Column="1" Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="추가" Style="{DynamicResource CustomAddButton}"
+                    Command="{Binding AddDataCommand}" Margin="3"/>
+                <Button Grid.Column="1" Content="취소" Style="{DynamicResource CustomAddButton}"
+                    Command="{Binding CancelDataCommand}" Margin="0,3,3,3" HorizontalAlignment="Right" Width="114"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
