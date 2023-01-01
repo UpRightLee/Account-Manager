@@ -85,11 +85,11 @@
             </Grid>
             <Grid Grid.Column="1" Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.25*"/>
-                    <ColumnDefinition Width="0.4*"/>
+                    <ColumnDefinition Width="0.2*"/>
+                    <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="0.05*"/>
-                    <ColumnDefinition Width="0.25*"/>
-                    <ColumnDefinition Width="0.4*"/>
+                    <ColumnDefinition Width="0.2*"/>
+                    <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="0.05*"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="3" Content="카드" Style="{DynamicResource CustomLabel}"/>
@@ -120,8 +120,8 @@
                         <DataGridTextColumn Header="입출" Binding="{Binding InOut}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                         <DataGridTextColumn Header="금액" Binding="{Binding Money}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCellMoney}"/>
                         <DataGridTextColumn Header="분류" Binding="{Binding Kind}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
-                        <DataGridTextColumn Header="카드" Binding="{Binding Card}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                         <DataGridTextColumn Header="은행" Binding="{Binding Bank}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="카드" Binding="{Binding Card}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                         <DataGridTextColumn Header="용도" Binding="{Binding Use}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                         <DataGridTextColumn Header="세부내역" Binding="{Binding Detail}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                     </DataGrid.Columns>

@@ -8,9 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Office.Interop.Excel;
+using InOutNote.ExcelManage;
 
 namespace InOutNote.ViewModels
 {
@@ -22,6 +25,7 @@ namespace InOutNote.ViewModels
         private static IDataBaseService dataBaseService = DataBaseService.Instance;
         private static IWindowService windowService = WindowService.Instance;
         private static IMessageBoxService messageBoxService = MessageBoxService.Instance;
+        private static IExcelService excelService = ExcelService.Instance;
 
         private ObservableCollection<InOutModel> inOutList = new ObservableCollection<InOutModel>();
 
@@ -205,7 +209,8 @@ namespace InOutNote.ViewModels
 
         private void ExcelDownload()
         {
-            Console.WriteLine("ExcelDownload Command");
+            if (excelService.SaveInOutDataList(InOutList)) messageBoxService.ShowMessageBox("========== Excel Save Success ==========");
+            else messageBoxService.ShowMessageBox("========== Excel Save Fail ==========");
         }
 
         private void SelectData()

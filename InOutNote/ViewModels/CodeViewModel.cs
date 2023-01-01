@@ -1,5 +1,6 @@
 ﻿using InOutNote.Command;
 using InOutNote.DataBase;
+using InOutNote.ExcelManage;
 using InOutNote.Models;
 using InOutNote.Notifier;
 using InOutNote.WindowManage;
@@ -18,6 +19,7 @@ namespace InOutNote.ViewModels
         private static IDataBaseService dataBaseService = DataBaseService.Instance;
         private static IWindowService windowService = WindowService.Instance;
         private static IMessageBoxService messageBoxService = MessageBoxService.Instance;
+        private static IExcelService excelService = ExcelService.Instance;
 
         private ObservableCollection<Bank> bankList = new ObservableCollection<Bank>();
         private ObservableCollection<Use> useList = new ObservableCollection<Use>();
@@ -165,7 +167,16 @@ namespace InOutNote.ViewModels
 
         private void ExcelDownload()
         {
-            Console.WriteLine("ExcelDownload Command");
+            if (SelectedBankOrKind == "은행 및 카드")
+            {
+                if (excelService.SaveBankCardCodeList(BankList)) messageBoxService.ShowMessageBox("========== Excel Save Success ==========");
+                else messageBoxService.ShowMessageBox("========== Excel Save Fail ==========");
+            }
+            else
+            {
+                if (excelService.SaveUseCodeList(UseList)) messageBoxService.ShowMessageBox("========== Excel Save Success ==========");
+                else messageBoxService.ShowMessageBox("========== Excel Save Fail ==========");
+            }
         }
 
         private void SelectData()
