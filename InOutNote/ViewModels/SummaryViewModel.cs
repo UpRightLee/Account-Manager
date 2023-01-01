@@ -89,6 +89,16 @@ namespace InOutNote.ViewModels
                 }
                 if (returnData[i].InOut == "출금")
                 {
+                    if (i == 0)
+                    {
+                        SummaryList.Add(new SummaryData
+                        {
+                            Money = returnData[i].Money,
+                            Month = returnData[i].Month,
+                            Year = returnData[i].Year,
+                            InOut = returnData[i].InOut
+                        });
+                    }
                     for (int k = 0; k < SummaryList.Count; k++)
                     {
                         if (returnData[i].Month == SummaryList[k].Month)
@@ -97,6 +107,7 @@ namespace InOutNote.ViewModels
                             SummaryList[k].Money = sum.ToString();
                         }
                     }
+                    
                 }
             }
             YearSummaryList = new ObservableCollection<SummaryData>();
