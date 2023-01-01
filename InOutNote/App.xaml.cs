@@ -18,9 +18,11 @@ namespace InOutNote
     public partial class App : Application
     {  
         private static readonly ILog log = LogManager.GetLogger(typeof(App));
+        private static IDataBaseService dataBaseService = DataBaseService.Instance;
         protected override void OnStartup(StartupEventArgs e)
         {
             log.Info("=============Application Start=============");
+            dataBaseService.CreateDB();
             base.OnStartup(e);
         }
     }

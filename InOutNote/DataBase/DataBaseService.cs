@@ -59,13 +59,14 @@ namespace InOutNote.DataBase
                         "Kind TEXT, " +
                         "PRIMARY KEY(Bank) );";
 
-                    string sql3 = "CREATE TABLE Card_Code(" +
+                    string sql3 = "CREATE TABLE IF NOT EXISTS Card_Code(" +
                         "Card  INTEGER NOT NULL, " +
                         "Description TEXT NOT NULL, " +
+                        "Bank INTEGER NOT NULL," +
                         "PRIMARY KEY(Card) " +
                         "FOREIGN KEY(Bank) REFERENCES Bank_Code(Bank));";
 
-                    string sql4 = "CREATE TABLE Use_Code(" +
+                    string sql4 = "CREATE TABLE IF NOT EXISTS Use_Code(" +
                         "Use INTEGER NOT NULL, " +
                         "Description TEXT NOT NULL, " +
                         "PRIMARY KEY(Use) );";
