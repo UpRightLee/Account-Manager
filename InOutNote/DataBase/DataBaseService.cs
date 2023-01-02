@@ -575,6 +575,7 @@ namespace InOutNote.DataBase
             string card = inOutData.Card!;
             string use = inOutData.Use!;
             string detail = inOutData.Detail!;
+            string kind = inOutData.Kind!;
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(path))
@@ -602,7 +603,7 @@ namespace InOutNote.DataBase
                         $"('{inOut}', " +
                         $"{money}, " +
                         $"'{useDate}', " +
-                        $"(SELECT Bank FROM Bank_Code WHERE Bank_Code.Description = '{bank}'), " +
+                        $"(SELECT Bank FROM Bank_Code WHERE Bank_Code.Description = '{bank}' AND Bank_Code.Kind = '{kind}'), " +
                         $"(SELECT Use FROM Use_Code WHERE Use_Code.Description = '{use}'), " +
                         $"'{detail}'); ";
                     }

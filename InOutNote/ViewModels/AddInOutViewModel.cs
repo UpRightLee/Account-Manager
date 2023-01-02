@@ -220,7 +220,8 @@ namespace InOutNote.ViewModels
                 UseDate = SelectedDate.ToString("yyyy-MM-dd"),
                 Money = SelectedMoney,
                 Use = SelectedUse,
-                Detail = SelectedDetail
+                Detail = SelectedDetail,
+                Kind = SelectedKind
             };
             if (dataBaseService.InsertInOutData(inOutData)) messageBoxService.ShowMessageBox("Insert Data Success");
             else messageBoxService.ShowMessageBox("Insert Failed");
