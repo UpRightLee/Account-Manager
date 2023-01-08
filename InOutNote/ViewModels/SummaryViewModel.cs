@@ -75,6 +75,9 @@ namespace InOutNote.ViewModels
             List<SummaryData> returnData = dataBaseService.SelectBalanceInfo(SelectedYear);
 
             SummaryList = new ObservableCollection<SummaryData>();
+            int isInMonthIndex = 0;
+            bool isInMonth = false;
+            bool isOutMonth = false;
             for (int i = 0; i < returnData.Count; i++)
             {
                 if (returnData[i].InOut == "입금")
@@ -86,30 +89,30 @@ namespace InOutNote.ViewModels
                         Year = returnData[i].Year,
                         InOut = returnData[i].InOut
                     });
+                    isInMonth = true;
                 }
-                if (returnData[i].InOut == "출금")
+                else if (returnData[i].InOut == "출금")
                 {
-                    if (i == 0)
-                    {
-                        SummaryList.Add(new SummaryData
-                        {
-                            Money = returnData[i].Money,
-                            Month = returnData[i].Month,
-                            Year = returnData[i].Year,
-                            InOut = returnData[i].InOut
-                        });
-                    }
+                    isInMonthIndex = i;
+                    isOutMonth = true;
+                }
+
+                if (isInMonth & isOutMonth)
+                {
                     for (int k = 0; k < SummaryList.Count; k++)
                     {
-                        if (returnData[i].Month == SummaryList[k].Month)
+                        if (returnData[isInMonthIndex].Month == SummaryList[k].Month)
                         {
-                            int sum = int.Parse(SummaryList[k].Money!) - int.Parse(returnData[i].Money!);
+                            uint sum = uint.Parse(SummaryList[k].Money!) - uint.Parse(returnData[isInMonthIndex].Money!);
                             SummaryList[k].Money = sum.ToString();
                         }
                     }
-                    
+                    isInMonth = false;
+                    isOutMonth = false;
                 }
             }
+
+
             YearSummaryList = new ObservableCollection<SummaryData>();
             for (int i = 0; i < SummaryList.Count; i++)
             {
