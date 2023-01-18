@@ -112,31 +112,17 @@ namespace InOutNote.ViewModels
                 }
             }
 
-
-            YearSummaryList = new ObservableCollection<SummaryData>();
-            for (int i = 0; i < SummaryList.Count; i++)
+            string inSummary = dataBaseService.SelectINBalanceInfo();
+            string outSummary = dataBaseService.SelectOUTBalanceInfo();
+            YearSummaryList = new ObservableCollection<SummaryData>
             {
-                if (YearSummaryList.Count > 0)
+                new SummaryData
                 {
-                    for (int k = 0; k < YearSummaryList.Count; k++)
-                    {
-                        if (SummaryList[i].Year == YearSummaryList[k].Year) YearSummaryList[k].Money = (YearSummaryList[k].returnInt(YearSummaryList[k].Money!) + SummaryList[i].returnInt(SummaryList[i].Money!)).ToString();
-                    }
-
-                    //YearSummaryList.Add(SummaryList[i]);
+                    Money = String.Format("{0:#,###}", int.Parse(inSummary) - int.Parse(outSummary))
                 }
-                else
-                {
-                    YearSummaryList.Add(new SummaryData
-                    {
-                        Year = SummaryList[i].Year,
-                        Money = SummaryList[i].Money
-                    });
-                }
+            };
 
-                SummaryList[i].Money = String.Format("{0:#,###}", int.Parse(SummaryList[i].Money!));
-            }
-            if (YearSummaryList.Count > 0) yearSummaryList[0].Money = String.Format("{0:#,###}", int.Parse(yearSummaryList[0]?.Money!));
+            for (int i = 0; i < SummaryList.Count; i++) SummaryList[i].Money = String.Format("{0:#,###}", int.Parse(SummaryList[i].Money!));
         }
         private void LoadSummaryView()
         {

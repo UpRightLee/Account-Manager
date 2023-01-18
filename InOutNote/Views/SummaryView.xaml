@@ -64,7 +64,6 @@
             </DataGrid>
             <DataGrid Grid.Column="2" ItemsSource="{Binding YearSummaryList}" Style="{DynamicResource CustomGrid}" >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Year" Binding="{Binding Year}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                     <DataGridTextColumn Header="총 자산 (원)" Binding="{Binding Money}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCellMoney}"/>
                 </DataGrid.Columns>
             </DataGrid>

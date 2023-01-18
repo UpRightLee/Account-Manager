@@ -451,6 +451,72 @@ namespace InOutNote.DataBase
             }
             return returnData;
         }
+        public string SelectINBalanceInfo()
+        {
+            string returnData = "";
+
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+
+                    string sql = "SELECT SUM(Money) AS MONEY " +
+                        "FROM Balance_Info " +
+                        $"WHERE InOut = 'IN';";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        log.Info(reader["Money"].ToString());
+
+                        returnData = ((long)reader["Money"]).ToString();
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+            }
+            return returnData;
+        }
+        public string SelectOUTBalanceInfo()
+        {
+            string returnData = "";
+
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+
+                    string sql = "SELECT SUM(Money) AS MONEY " +
+                        "FROM Balance_Info " +
+                        $"WHERE InOut = 'OUT';";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        log.Info(reader["Money"].ToString());
+
+                        returnData = ((long)reader["Money"]).ToString();
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+            }
+            return returnData;
+        }
 
         public bool DeleteInOutData(InOutModel inOutData)
         {
