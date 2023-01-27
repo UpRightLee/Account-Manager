@@ -55,18 +55,26 @@
                 <ColumnDefinition Width="0.05*"/>
                 <ColumnDefinition Width="0.3*"/>
             </Grid.ColumnDefinitions>
-            <DataGrid Grid.Column="0" ItemsSource="{Binding SummaryList}" Style="{DynamicResource CustomGrid}" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.25*"/>
+                <RowDefinition Height="0.75*"/>
+            </Grid.RowDefinitions>
+            <DataGrid Grid.Column="0" Grid.RowSpan="2" ItemsSource="{Binding SummaryList}" Style="{DynamicResource CustomGrid}" >
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Year" Binding="{Binding Year}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                     <DataGridTextColumn Header="Month" Binding="{Binding Month}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
-                    <DataGridTextColumn Header="월 별 자산 (원)" Binding="{Binding Money}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCellMoney}"/>
+                    <DataGridTextColumn Header="월 별 자산" Binding="{Binding Money}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCellMoney}"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid Grid.Column="2" ItemsSource="{Binding YearSummaryList}" Style="{DynamicResource CustomGrid}" >
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="총 자산 (원)" Binding="{Binding Money}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCellMoney}"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.5*"/>
+                    <RowDefinition Height="0.5*"/>
+                </Grid.RowDefinitions>
+                <Label Content="총 자산" Grid.Row="0" Style="{StaticResource CustomLabel}" />
+                <Label Content="{Binding TotalSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                      Grid.Row="1" Style="{StaticResource CustomLabel}"/>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

@@ -19,6 +19,7 @@ namespace InOutNote.ViewModels
         private ObservableCollection<SummaryData> summaryList = new ObservableCollection<SummaryData>();
         private ObservableCollection<SummaryData> yearSummaryList = new ObservableCollection<SummaryData>();
 
+        private string totalSum = "";
         private string selectedYear = "";
         public ObservableCollection<SummaryData> YearSummaryList
         {
@@ -32,8 +33,8 @@ namespace InOutNote.ViewModels
         public ObservableCollection<SummaryData> SummaryList
         {
             get { return summaryList; }
-            set 
-            { 
+            set
+            {
                 summaryList = value;
                 OnPropertyChanged("SummaryList");
             }
@@ -54,6 +55,15 @@ namespace InOutNote.ViewModels
             {
                 selectedYear = value;
                 OnPropertyChanged("SelectedYear");
+            }
+        }
+        public string TotalSum
+        {
+            get { return totalSum; }
+            set
+            {
+                totalSum = value;
+                OnPropertyChanged("TotalSum");
             }
         }
         public RelayCommand LoadSummaryViewCommand { get; }
@@ -103,8 +113,9 @@ namespace InOutNote.ViewModels
                     {
                         if (returnData[isInMonthIndex].Month == SummaryList[k].Month)
                         {
-                            uint sum = uint.Parse(SummaryList[k].Money!) - uint.Parse(returnData[isInMonthIndex].Money!);
-                            SummaryList[k].Money = sum.ToString();
+                            if (uint.Parse(SummaryList[k].Money!) > uint.Parse(returnData[isInMonthIndex].Money!))
+                                SummaryList[k].Money = (uint.Parse(SummaryList[k].Money!) - uint.Parse(returnData[isInMonthIndex].Money!)).ToString();
+                            else SummaryList[k].Money = "-" + (uint.Parse(returnData[isInMonthIndex].Money!) - uint.Parse(SummaryList[k].Money!)).ToString();
                         }
                     }
                     isInMonth = false;
@@ -114,15 +125,9 @@ namespace InOutNote.ViewModels
 
             string inSummary = dataBaseService.SelectINBalanceInfo();
             string outSummary = dataBaseService.SelectOUTBalanceInfo();
-            YearSummaryList = new ObservableCollection<SummaryData>
-            {
-                new SummaryData
-                {
-                    Money = String.Format("{0:#,###}", int.Parse(inSummary) - int.Parse(outSummary))
-                }
-            };
+            TotalSum = String.Format("{0:#,###}원", int.Parse(inSummary) - int.Parse(outSummary));
 
-            for (int i = 0; i < SummaryList.Count; i++) SummaryList[i].Money = String.Format("{0:#,###}", int.Parse(SummaryList[i].Money!));
+            for (int i = 0; i < SummaryList.Count; i++) SummaryList[i].Money = String.Format("{0:#,###원}", int.Parse(SummaryList[i].Money!));
         }
         private void LoadSummaryView()
         {

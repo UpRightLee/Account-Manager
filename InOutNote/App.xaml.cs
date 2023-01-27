@@ -16,14 +16,24 @@ namespace InOutNote
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
-    {  
+    {
+        Mutex? mutex;
         private static readonly ILog log = LogManager.GetLogger(typeof(App));
         private static IDataBaseService dataBaseService = DataBaseService.Instance;
         protected override void OnStartup(StartupEventArgs e)
         {
-            log.Info("=============Application Start=============");
-            dataBaseService.CreateDB();
-            base.OnStartup(e);
+            string mutexName = "InOutNote";
+            bool createNew;
+
+            mutex = new Mutex(true, mutexName, out createNew);
+
+            if (!createNew) Shutdown();
+            else
+            {
+                log.Info("=============Application Start=============");
+                dataBaseService.CreateDB();
+                base.OnStartup(e);
+            }      
         }
     }
 }
