@@ -113,7 +113,11 @@
             </Grid>
         </Grid>
         <Grid Grid.Row="1" Background="#e2e2e2">
-            <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.9*"/>
+                <ColumnDefinition Width="0.1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
                 <DataGrid ItemsSource="{Binding InOutList}" Style="{DynamicResource CustomGrid}" SelectedItem="{Binding SelectedInOutData}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="날짜" Binding="{Binding UseDate}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
@@ -126,6 +130,26 @@
                         <DataGridTextColumn Header="세부내역" Binding="{Binding Detail}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                     </DataGrid.Columns>
                 </DataGrid>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="0.2*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="총 소비 금액" Style="{StaticResource CustomLabel}"/>
+                <Label Grid.Row="1" Style="{StaticResource CustomLabel}"
+                       Content="{Binding OutTotalSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Row="3" Content="잔액" Style="{StaticResource CustomLabel}"/>
+                <Label Grid.Row="4" Style="{StaticResource CustomLabel}"
+                       Content="{Binding TotalSum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </Grid>
     </Grid>

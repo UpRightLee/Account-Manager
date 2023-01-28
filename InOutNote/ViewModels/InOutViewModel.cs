@@ -40,6 +40,8 @@ namespace InOutNote.ViewModels
         private string selectedBank = "";
         private string selectedCard = "";
         private string selectedUse = "";
+        private string outTotalSum = "";
+        private string totalSum = "";
 
         private InOutModel selectedInOutData= new InOutModel();
 
@@ -172,6 +174,24 @@ namespace InOutNote.ViewModels
                 OnPropertyChanged("SelectedUse");
             }
         }
+        public string OutTotalSum
+        {
+            get { return outTotalSum; }
+            set
+            {
+                outTotalSum = value;
+                OnPropertyChanged("OutTotalSum");
+            }
+        }
+        public string TotalSum
+        {
+            get { return totalSum; }
+            set
+            {
+                totalSum = value;
+                OnPropertyChanged("TotalSum");
+            }
+        }
         public RelayCommand LoadInOutViewCommand { get; }
         public RelayCommand SelectDataCommand { get; }
         public RelayCommand ExcelDownloadCommand { get; }
@@ -228,6 +248,9 @@ namespace InOutNote.ViewModels
 
             InOutList = new ObservableCollection<InOutModel>();
 
+            int inTotal = 0;
+            int outTotal = 0;
+
             for (int i = 0; i < returnInOutData.Count; i++)
             {
                 InOutList.Add(
@@ -242,13 +265,18 @@ namespace InOutNote.ViewModels
                         UseDate = returnInOutData[i].UseDate,
                         Detail = returnInOutData[i].Detail
                     });
+                if (returnInOutData[i].InOut == "입금" ) inTotal += int.Parse(returnInOutData[i].Money!);
+                else outTotal += int.Parse(returnInOutData[i].Money!);
             }
+
+            OutTotalSum = String.Format("{0:#,###원}", outTotal);
+            TotalSum = String.Format("{0:#,###원}", inTotal - outTotal);
         }
 
         private void LoadInOutView()
         {
             SelectedToDate = DateTime.Now;
-            SelectedFromDate = DateTime.Now.AddDays(-7);
+            SelectedFromDate = DateTime.Now.AddDays(-30);
 
             InOut = new ObservableCollection<string>();
             InOut.Add("입금");
@@ -303,6 +331,9 @@ namespace InOutNote.ViewModels
 
             InOutList = new ObservableCollection<InOutModel>();
 
+            int inTotal = 0;
+            int outTotal = 0;
+
             for (int i = 0; i < returnInOutData.Count; i++)
             {
                 InOutList.Add(
@@ -317,7 +348,13 @@ namespace InOutNote.ViewModels
                         UseDate = returnInOutData[i].UseDate,
                         Detail = returnInOutData[i].Detail
                     });
+
+                if (returnInOutData[i].InOut == "입금") inTotal += int.Parse(returnInOutData[i].Money!);
+                else outTotal += int.Parse(returnInOutData[i].Money!);
             }
+
+            OutTotalSum = String.Format("{0:#,###원}", outTotal);
+            TotalSum = String.Format("{0:#,###원}", inTotal - outTotal);
         }
         public void UnloadInOutView()
         {
