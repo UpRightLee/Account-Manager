@@ -12,6 +12,7 @@ namespace InOutNote.DataBase
         public void CreateDB();
         public List<InOutModel> SelectWeeklyInOutData();
         public List<InOutModel> SelectMonthlyInOutData();
+        public List<InOutModel> SelectCreditCardData(string fromDate, string ToDate);
         public List<InOutModel> SelectAllInOutData(string fromDate, string ToDate, InOutModel inOutModel);
         public List<Bank> SelectBankCode();
         public List<Card> SelectCardCode();
@@ -24,7 +25,7 @@ namespace InOutNote.DataBase
         public bool DeleteInOutData(InOutModel inOutData);
         public bool DeleteBankCode(Bank bank);
         public bool DeleteUseCode(Use use);
-
+        public bool DeleteCreditData(string month);
         public bool InsertInOutData(InOutModel inOutData);
         public bool InsertBankCardCode(string kind, string bank, string card);
         public bool InsertUseCode(string use);

@@ -66,7 +66,6 @@
                 <Button Grid.Column="3" Content="추가" Style="{DynamicResource CustomButton}" Command="{Binding AddDataCommand}"/>
                 <Button Grid.Column="4" Content="삭제" Style="{DynamicResource CustomButton}" Command="{Binding DeleteDataCommand}"/>
             </Grid>
-
             <Grid Grid.Column="0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.25*"/>
@@ -105,11 +104,11 @@
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="0.2*"/>
                     <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="0.05*"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="용도" Style="{DynamicResource CustomLabel}"/>
                 <ComboBox Grid.Column="1" Style="{DynamicResource CustomComboBox}"
                           ItemsSource="{Binding Use}" SelectedItem="{Binding SelectedUse, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Grid.Column="3" Content="신용카드결제" Style="{DynamicResource CustomButton}" Command="{Binding DeleteCreaditDataCommand}"/>
             </Grid>
         </Grid>
         <Grid Grid.Row="1" Background="#e2e2e2">

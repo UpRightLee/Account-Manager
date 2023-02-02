@@ -198,6 +198,7 @@ namespace InOutNote.ViewModels
         public RelayCommand AddDataCommand { get; }
         public RelayCommand DeleteDataCommand { get; }
         public RelayCommand UnloadInOutViewCommand { get; }
+        public RelayCommand DeleteCreaditDataCommand { get; }
 
         public InOutViewModel()
         {
@@ -207,6 +208,18 @@ namespace InOutNote.ViewModels
             AddDataCommand = new RelayCommand(AddData);
             DeleteDataCommand = new RelayCommand(DeleteData);
             UnloadInOutViewCommand = new RelayCommand(UnloadInOutView);
+            DeleteCreaditDataCommand = new RelayCommand(DeleteCreditData);
+        }
+
+        private void DeleteCreditData()
+        {
+            if (messageBoxService.ShowYesOrNoMessageBox($"{DateTime.Today.AddMonths(-1).ToString("MM")}월 신용카드 내역을 삭제하시겠습니까?"))
+            {
+                if(dataBaseService.DeleteCreditData(DateTime.Today.AddMonths(-1).ToString("MM"))) messageBoxService.ShowMessageBox("========== Delete Success ==========");
+                else messageBoxService.ShowMessageBox("========== Delete Fail ==========");
+            }
+            else return;
+            SelectData();
         }
 
         private void DeleteData()
@@ -265,8 +278,27 @@ namespace InOutNote.ViewModels
                         UseDate = returnInOutData[i].UseDate,
                         Detail = returnInOutData[i].Detail
                     });
-                if (returnInOutData[i].InOut == "입금" ) inTotal += int.Parse(returnInOutData[i].Money!);
+ 
+                if (returnInOutData[i].InOut == "입금") inTotal += int.Parse(returnInOutData[i].Money!);
                 else outTotal += int.Parse(returnInOutData[i].Money!);
+            }
+
+            List<InOutModel> creditList = dataBaseService.SelectCreditCardData(SelectedFromDate.ToString("yyyy-MM-dd"), SelectedToDate.ToString("yyyy-MM-dd"));
+            
+            for (int i = 0; i < creditList.Count; i++)
+            {
+                InOutList.Add(
+                    new InOutModel
+                    {
+                        InOut = creditList[i].InOut,
+                        Money = String.Format("{0:#,###}", int.Parse(creditList[i].Money!)),
+                        Kind = creditList[i].Kind,
+                        Use = creditList[i].Use,
+                        Bank = creditList[i].Bank,
+                        Card = creditList[i].Card,
+                        UseDate = creditList[i].UseDate,
+                        Detail = creditList[i].Detail
+                    });
             }
 
             OutTotalSum = String.Format("{0:#,###원}", outTotal);
@@ -276,7 +308,7 @@ namespace InOutNote.ViewModels
         private void LoadInOutView()
         {
             SelectedToDate = DateTime.Now;
-            SelectedFromDate = DateTime.Now.AddDays(-30);
+            SelectedFromDate = DateTime.Now.AddDays(-14);
 
             InOut = new ObservableCollection<string>();
             InOut.Add("입금");
@@ -318,43 +350,7 @@ namespace InOutNote.ViewModels
             Use.Add("전체");
             SelectedUse = "전체";
 
-            List<InOutModel> returnInOutData = dataBaseService.SelectAllInOutData(
-                SelectedFromDate.ToString("yyyy-MM-dd"), SelectedToDate.ToString("yyyy-MM-dd"), 
-                new InOutModel
-                {
-                    Bank = SelectedBank,
-                    Card = SelectedCard,
-                    Kind = SelectedKind,
-                    Use = SelectedUse,
-                    InOut = SelectedInOut
-                });
-
-            InOutList = new ObservableCollection<InOutModel>();
-
-            int inTotal = 0;
-            int outTotal = 0;
-
-            for (int i = 0; i < returnInOutData.Count; i++)
-            {
-                InOutList.Add(
-                    new InOutModel 
-                    { 
-                        InOut = returnInOutData[i].InOut, 
-                        Money = String.Format("{0:#,###}", int.Parse(returnInOutData[i].Money!)),
-                        Kind = returnInOutData[i].Kind,
-                        Use = returnInOutData[i].Use,
-                        Bank= returnInOutData[i].Bank,
-                        Card = returnInOutData[i].Card,
-                        UseDate = returnInOutData[i].UseDate,
-                        Detail = returnInOutData[i].Detail
-                    });
-
-                if (returnInOutData[i].InOut == "입금") inTotal += int.Parse(returnInOutData[i].Money!);
-                else outTotal += int.Parse(returnInOutData[i].Money!);
-            }
-
-            OutTotalSum = String.Format("{0:#,###원}", outTotal);
-            TotalSum = String.Format("{0:#,###원}", inTotal - outTotal);
+            SelectData();
         }
         public void UnloadInOutView()
         {

@@ -12,6 +12,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
 namespace InOutNote.DataBase
 {
@@ -71,6 +72,14 @@ namespace InOutNote.DataBase
                         "Description TEXT NOT NULL, " +
                         "PRIMARY KEY(Use) );";
 
+                    string sql5 = "CREATE TABLE IF NOT EXITS Credit_Card_Use_Info(" +
+                        "Money INTEGER NOT NULL, " +
+                        "UseDate TEXT, " +
+                        "Bank INTEGER, " +
+                        "Card INTEGER, " +
+                        "UseWhere INTEGER NOT NULL, " +
+                        "Detail TEXT)";
+
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     command.ExecuteNonQuery();
 
@@ -81,6 +90,9 @@ namespace InOutNote.DataBase
                     command.ExecuteNonQuery();
 
                     command = new SQLiteCommand(sql4, connection);
+                    command.ExecuteNonQuery();
+
+                    command = new SQLiteCommand(sql5, connection);
                     command.ExecuteNonQuery();
 
                     log.Info($"{MethodBase.GetCurrentMethod()?.Name}::Create DB Success");
@@ -161,6 +173,60 @@ namespace InOutNote.DataBase
                             InOut = reader["InOut"].ToString() == "IN" ? "입금" : "출금",
                             Money = ((long)reader["Money"]).ToString(),
                             UseDate = reader["UseDate"].ToString(),
+                        });
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+            }
+            return returnData;
+        }
+        public List<InOutModel> SelectCreditCardData(string fromDate, string ToDate)
+        {
+            List<InOutModel> returnData = new List<InOutModel>();
+
+            string path = String.Format("Data Source = {0}", filePath);
+            string today = DateTime.Now.ToString("yyyy-MM-dd");
+            string weekBefore = DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd");
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+
+                    string sql = "SELECT Money, A.Description AS Bank, B.Description AS Card, C.Description AS UseWhere, A.Kind, UseDate, Detail " +
+                        "FROM Credit_Card_Use_Info " +
+                        "LEFT JOIN Bank_Code A ON Credit_Card_Use_Info.Bank = A.Bank " +
+                        "LEFT JOIN Card_Code B ON Credit_Card_Use_Info.Card = B.Card " +
+                        "LEFT JOIN Use_Code C ON Credit_Card_Use_Info.UseWhere = C.Use " +
+                        $"WHERE UseDate BETWEEN '{fromDate}' AND '{ToDate}' " +
+                        $"ORDER BY UseDate;";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        log.Info(reader["Money"].ToString());
+                        log.Info(reader["UseDate"].ToString());
+                        log.Info(reader["Kind"].ToString());
+                        log.Info(reader["Bank"].ToString());
+                        log.Info(reader["Card"].ToString());
+                        log.Info(reader["UseWhere"].ToString());
+                        log.Info(reader["Detail"].ToString());
+
+                        returnData.Add(new InOutModel
+                        {
+                            InOut = "출금",
+                            Money = ((long)reader["Money"]).ToString(),
+                            UseDate = reader["UseDate"].ToString(),
+                            Kind = reader["Kind"].ToString(),
+                            Bank = reader["Bank"].ToString(),
+                            Card = reader["Card"].ToString(),
+                            Use = reader["UseWhere"].ToString(),
+                            Detail = reader["Detail"].ToString()
                         });
                     }
                     reader.Close();
@@ -528,14 +594,28 @@ namespace InOutNote.DataBase
                 using (SQLiteConnection connection = new SQLiteConnection(path))
                 {
                     connection.Open();
+                    string sql = "";
 
-                    string sql = "DELETE FROM Balance_Info " +
+                    if (inOutData.Kind == "신용" && inOutData.Use != "신용카드값")
+                    {
+                        sql = "DELETE FROM Credit_Card_Use_Info " +
                         "WHERE " +
-                        $"Bank = (SELECT Bank FROM Bank_Code WHERE Description = '{inOutData.Bank}') " +
+                        $"Bank = (SELECT Bank FROM Bank_Code WHERE Description = '{inOutData.Bank}' AND Kind = '{inOutData.Kind}') " +
+                        $"AND Money = {inOutData.Money!.Replace(",", "")} " +
+                        $"AND UseDate = '{inOutData.UseDate}' " +
+                        $"AND UseWhere = (SELECT Use FROM Use_Code WHERE Description = '{inOutData.Use}');";
+                    }
+                    else
+                    {
+                        sql = "DELETE FROM Balance_Info " +
+                        "WHERE " +
+                        $"Bank = (SELECT Bank FROM Bank_Code WHERE Description = '{inOutData.Bank}' AND Kind = '{inOutData.Kind}') " +
                         $"AND InOut = '{(inOutData.InOut == "입금" ? "IN" : "OUT")}' " +
                         $"AND Money = {inOutData.Money!.Replace(",", "")} " +
                         $"AND UseDate = '{inOutData.UseDate}' " +
                         $"AND UseWhere = (SELECT Use FROM Use_Code WHERE Description = '{inOutData.Use}');";
+                    }
+                    
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     returnData = command.ExecuteNonQuery() > 0;
@@ -628,6 +708,32 @@ namespace InOutNote.DataBase
                 return false;
             }
         }
+        public bool DeleteCreditData(string month)
+        {
+            bool returnData = false;
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+
+                    string sql = "DELETE FROM Credit_Card_Use_Info " +
+                        $"WHERE strftime('%Y-%m', UseDate) = '{DateTime.Today.Year}-{month}';";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    returnData = command.ExecuteNonQuery() > 0;
+                }
+                if (returnData) return true;
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+                return false;
+            }
+        }
 
         public bool InsertInOutData(InOutModel inOutData)
         {
@@ -648,33 +754,48 @@ namespace InOutNote.DataBase
                 {
                     connection.Open();
                     string sql = "";
-                    if (card != null)
+
+                    if (kind == "신용" && use != "신용카드값")
                     {
-                        sql = "INSERT INTO Balance_Info " +
-                        " (InOut, Money, UseDate, Bank, Card, UseWhere, Detail ) " +
-                        "VALUES " +
-                        $"('{inOut}', " +
-                        $"{money}, " +
-                        $"'{useDate}', " +
-                        $"(SELECT Bank FROM Bank_Code WHERE Bank_Code.Description = '{bank}' AND Bank_Code.Bank = (SELECT Bank FROM Card_Code WHERE Card_Code.Description = '{card}')), " +
-                        $"(SELECT Card FROM Card_Code WHERE Card_Code.Description = '{card}'), " +
-                        $"(SELECT Use FROM Use_Code WHERE Use_Code.Description = '{use}'), " +
-                        $"'{detail}'); ";
+                        sql = "INSERT INTO Credit_Card_Use_Info " +
+                            " (Money, UseDate, Bank, Card, UseWhere, Detail ) " +
+                            "VALUES " +
+                            $"({money}, " +
+                            $"'{useDate}', " +
+                            $"(SELECT Bank FROM Bank_Code WHERE Bank_Code.Description = '{bank}' AND Bank_Code.Bank = (SELECT Bank FROM Card_Code WHERE Card_Code.Description = '{card}')), " +
+                            $"(SELECT Card FROM Card_Code WHERE Card_Code.Description = '{card}'), " +
+                            $"(SELECT Use FROM Use_Code WHERE Use_Code.Description = '{use}'), " +
+                            $"'{detail}'); ";
                     }
                     else
                     {
-                        sql = "INSERT INTO Balance_Info " +
-                        " (InOut, Money, UseDate, Bank, UseWhere, Detail ) " +
-                        "VALUES " +
-                        $"('{inOut}', " +
-                        $"{money}, " +
-                        $"'{useDate}', " +
-                        $"(SELECT Bank FROM Bank_Code WHERE Bank_Code.Description = '{bank}' AND Bank_Code.Kind = '{kind}'), " +
-                        $"(SELECT Use FROM Use_Code WHERE Use_Code.Description = '{use}'), " +
-                        $"'{detail}'); ";
+                        if (card != null)
+                        {
+                            sql = "INSERT INTO Balance_Info " +
+                            " (InOut, Money, UseDate, Bank, Card, UseWhere, Detail ) " +
+                            "VALUES " +
+                            $"('{inOut}', " +
+                            $"{money}, " +
+                            $"'{useDate}', " +
+                            $"(SELECT Bank FROM Bank_Code WHERE Bank_Code.Description = '{bank}' AND Bank_Code.Bank = (SELECT Bank FROM Card_Code WHERE Card_Code.Description = '{card}')), " +
+                            $"(SELECT Card FROM Card_Code WHERE Card_Code.Description = '{card}'), " +
+                            $"(SELECT Use FROM Use_Code WHERE Use_Code.Description = '{use}'), " +
+                            $"'{detail}'); ";
+                        }
+                        else
+                        {
+                            sql = "INSERT INTO Balance_Info " +
+                            " (InOut, Money, UseDate, Bank, UseWhere, Detail ) " +
+                            "VALUES " +
+                            $"('{inOut}', " +
+                            $"{money}, " +
+                            $"'{useDate}', " +
+                            $"(SELECT Bank FROM Bank_Code WHERE Bank_Code.Description = '{bank}' AND Bank_Code.Kind = '{kind}'), " +
+                            $"(SELECT Use FROM Use_Code WHERE Use_Code.Description = '{use}'), " +
+                            $"'{detail}'); ";
+                        }
                     }
-
-
+                    
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     returnData = command.ExecuteNonQuery() > 0;
                 }

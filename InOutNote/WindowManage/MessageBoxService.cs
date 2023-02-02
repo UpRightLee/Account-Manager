@@ -22,5 +22,10 @@ namespace InOutNote.WindowManage
         {
             MessageBox.Show(message);
         }
+        public bool ShowYesOrNoMessageBox(string message)
+        {
+            if (MessageBox.Show(message, "YesOrNo", MessageBoxButton.OKCancel) == MessageBoxResult.OK) return true;
+            else return false;
+        }
     }
 }

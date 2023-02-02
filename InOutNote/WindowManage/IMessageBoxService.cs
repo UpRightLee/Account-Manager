@@ -9,5 +9,6 @@ namespace InOutNote.WindowManage
     public interface IMessageBoxService
     {
         void ShowMessageBox(string message);
+        bool ShowYesOrNoMessageBox(string message);
     }
 }
