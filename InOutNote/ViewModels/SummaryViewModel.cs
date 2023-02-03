@@ -18,6 +18,7 @@ namespace InOutNote.ViewModels
         private ObservableCollection<string> yearList = new ObservableCollection<string>();
         private ObservableCollection<SummaryData> summaryList = new ObservableCollection<SummaryData>();
         private ObservableCollection<SummaryData> yearSummaryList = new ObservableCollection<SummaryData>();
+        private ObservableCollection<SummaryData> bankSummaryList = new ObservableCollection<SummaryData>();
 
         private string totalSum = "";
         private string selectedYear = "";
@@ -46,6 +47,15 @@ namespace InOutNote.ViewModels
             {
                 yearList = value;
                 OnPropertyChanged("YearList");
+            }
+        }
+        public ObservableCollection<SummaryData> BankSummaryList
+        {
+            get { return bankSummaryList; }
+            set
+            {
+                bankSummaryList = value;
+                OnPropertyChanged("BankSummaryList");
             }
         }
         public string SelectedYear
@@ -128,6 +138,49 @@ namespace InOutNote.ViewModels
             TotalSum = String.Format("{0:#,###}원", int.Parse(inSummary) - int.Parse(outSummary));
 
             for (int i = 0; i < SummaryList.Count; i++) SummaryList[i].Money = String.Format("{0:#,###원}", int.Parse(SummaryList[i].Money!));
+
+            List<SummaryData> bankReturnData = dataBaseService.SelectBankSummaryList();
+            BankSummaryList = new ObservableCollection<SummaryData>();
+
+            isInMonthIndex = 0;
+            isInMonth = false;
+            isOutMonth = false;
+            for (int i = 0; i < bankReturnData.Count; i++)
+            {
+                if (bankReturnData[i].InOut == "입금")
+                {
+                    BankSummaryList.Add(new SummaryData
+                    {
+                        Money = bankReturnData[i].Money,
+                        Month = bankReturnData[i].Month,
+                        Bank = bankReturnData[i].Bank,
+                        InOut = bankReturnData[i].InOut
+                    });
+                    isInMonth = true;
+                }
+                else if (bankReturnData[i].InOut == "출금")
+                {
+                    isInMonthIndex = i;
+                    isOutMonth = true;
+                }
+
+                if (isInMonth & isOutMonth)
+                {
+                    for (int k = 0; k < BankSummaryList.Count; k++)
+                    {
+                        if (bankReturnData[isInMonthIndex].Bank == BankSummaryList[k].Bank)
+                        {
+                            if (int.Parse(BankSummaryList[k].Money!) > int.Parse(bankReturnData[isInMonthIndex].Money!))
+                                BankSummaryList[k].Money = (int.Parse(BankSummaryList[k].Money!) - int.Parse(bankReturnData[isInMonthIndex].Money!)).ToString();
+                            else BankSummaryList[k].Money = "-" + (int.Parse(bankReturnData[isInMonthIndex].Money!) - int.Parse(BankSummaryList[k].Money!)).ToString();
+                        }
+                    }
+                    isInMonth = false;
+                    isOutMonth = false;
+                }
+            }
+
+            for (int i = 0; i < BankSummaryList.Count; i++) BankSummaryList[i].Money = String.Format("{0:#,###원}", int.Parse(BankSummaryList[i].Money!));
         }
         private void LoadSummaryView()
         {

@@ -517,6 +517,48 @@ namespace InOutNote.DataBase
             }
             return returnData;
         }
+        public List<SummaryData> SelectBankSummaryList()
+        {
+            List<SummaryData> returnData = new List<SummaryData>();
+
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+
+                    string sql = "SELECT SUM(money) AS Money, B.Description, InOut " +
+                        "FROM Balance_Info A " +
+                        "LEFT JOIN Bank_Code B " +
+                        "ON A.Bank = B.Bank " +
+                        "Group By B.Description, InOut; ";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        log.Info(reader["InOut"].ToString());
+                        log.Info(reader["Description"].ToString());
+                        log.Info(reader["Money"].ToString());
+
+                        returnData.Add(new SummaryData
+                        {
+                            InOut = reader["InOut"].ToString() == "IN" ? "입금" : "출금",
+                            Money = ((long)reader["Money"]).ToString(),
+                            Bank = reader["Description"].ToString()
+                        });
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+            }
+            return returnData;
+        }
         public string SelectINBalanceInfo()
         {
             string returnData = "";

@@ -12,6 +12,7 @@ namespace InOutNote.Models
         public string? Money { get; set; }
         public string? Month { get; set; }
         public string? Year { get; set; }
+        public string? Bank { get; set; }
 
         public int returnInt(string money)
         {
