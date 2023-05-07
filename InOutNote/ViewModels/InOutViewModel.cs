@@ -279,36 +279,70 @@ namespace InOutNote.ViewModels
                         Detail = returnInOutData[i].Detail
                     });
  
-                if (returnInOutData[i].InOut == "입금") inTotal += int.Parse(returnInOutData[i].Money!);
-                else outTotal += int.Parse(returnInOutData[i].Money!);
+                if (returnInOutData[i].Use != "은행간이체")
+                {
+                    if (returnInOutData[i].InOut == "입금") inTotal += int.Parse(returnInOutData[i].Money!);
+                    else outTotal += int.Parse(returnInOutData[i].Money!);
+                }
             }
 
-            List<InOutModel> creditList = dataBaseService.SelectCreditCardData(SelectedFromDate.ToString("yyyy-MM-dd"), SelectedToDate.ToString("yyyy-MM-dd"));
-            
-            for (int i = 0; i < creditList.Count; i++)
+            if (SelectedKind == "전체" || SelectedKind == "신용")
             {
                 InOutList.Add(
                     new InOutModel
                     {
-                        InOut = creditList[i].InOut,
-                        Money = String.Format("{0:#,###}", int.Parse(creditList[i].Money!)),
-                        Kind = creditList[i].Kind,
-                        Use = creditList[i].Use,
-                        Bank = creditList[i].Bank,
-                        Card = creditList[i].Card,
-                        UseDate = creditList[i].UseDate,
-                        Detail = creditList[i].Detail
+                        InOut = "=========",
+                        Money = "=========",
+                        Use = "=========",
+                        Kind = "신용카드내역",
+                        Bank = "=========",
+                        Card = "=========",
+                        UseDate = "=========",
+                        Detail = "========="
+                    });
+
+                List <InOutModel> creditList = dataBaseService.SelectCreditCardData(SelectedFromDate.ToString("yyyy-MM-dd"), SelectedToDate.ToString("yyyy-MM-dd"));
+                int creditTotal = 0;
+                for (int i = 0; i < creditList.Count; i++)
+                {
+                    InOutList.Add(
+                        new InOutModel
+                        {
+                            InOut = creditList[i].InOut,
+                            Money = String.Format("{0:#,###}", int.Parse(creditList[i].Money!)),
+                            Kind = creditList[i].Kind,
+                            Use = creditList[i].Use,
+                            Bank = creditList[i].Bank,
+                            Card = creditList[i].Card,
+                            UseDate = creditList[i].UseDate,
+                            Detail = creditList[i].Detail
+                        });
+                    creditTotal += int.Parse(creditList[i].Money!);
+                }
+
+                InOutList.Add(
+                    new InOutModel
+                    {
+                        InOut = "신용카드 합계",
+                        Money = String.Format("{0:#,###}", creditTotal),
+                        Use = "=========",
+                        Kind = "=========",
+                        Bank = "=========",
+                        Card = "=========",
+                        UseDate = "=========",
+                        Detail = "========="
                     });
             }
 
-            OutTotalSum = String.Format("{0:#,###원}", outTotal);
+            if (outTotal != 0) OutTotalSum = String.Format("{0:#,###원}", outTotal);
+            else OutTotalSum = "0원";
             TotalSum = String.Format("{0:#,###원}", inTotal - outTotal);
         }
 
         private void LoadInOutView()
         {
             SelectedToDate = DateTime.Now;
-            SelectedFromDate = DateTime.Now.AddDays(-14);
+            SelectedFromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
             InOut = new ObservableCollection<string>();
             InOut.Add("입금");

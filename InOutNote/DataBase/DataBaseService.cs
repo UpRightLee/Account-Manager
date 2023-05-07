@@ -1,5 +1,6 @@
 ﻿using InOutNote.Models;
 using log4net;
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Policy;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -116,6 +118,7 @@ namespace InOutNote.DataBase
                     string sql = "SELECT InOut, SUM(Money) AS Money, UseDate " +
                     "FROM Balance_Info " +
                     $"WHERE UseDate BETWEEN '{weekBefore}' AND '{today}' " +
+                    $"AND UseWhere != 19 " +
                     $"GROUP BY InOut, UseDate " +
                     $"ORDER BY UseDate;";
 
@@ -157,6 +160,7 @@ namespace InOutNote.DataBase
 
                     string sql = "SELECT InOut, SUM(Money) AS Money, UseDate " +
                     "FROM Balance_Info " +
+                    "WHERE UseWhere != 19 " +
                     $"GROUP BY InOut, strftime(\"%m\", UseDate)  " +
                     $"ORDER BY UseDate;";
 
@@ -948,6 +952,50 @@ namespace InOutNote.DataBase
                 log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
                 return false;
             }
+        }
+
+        public List<InOutModel> SelectGroupByInOutData(string fromDate, string toDate)
+        {
+            List<InOutModel> returnData = new List<InOutModel>();
+
+            string path = String.Format("Data Source = {0}", filePath);
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+                    string sql = "SELECT SUM(Money) AS MONEY, A.Description AS Bank, B.Description AS Card, C.Description AS UseWhere, strftime(\"%m\", UseDate) AS UseDate " +
+                        "FROM Balance_Info " +
+                        "LEFT JOIN Bank_Code A ON Balance_Info.Bank = A.Bank " +
+                        "LEFT JOIN Card_Code B ON Balance_Info.Card = B.Card " +
+                        "LEFT JOIN Use_Code C ON Balance_Info.UseWhere = C.Use " +
+                        $"WHERE Balance_Info.InOut = 'OUT' " +
+                        "AND Balance_Info.UseWhere != 19 " +
+                        $"AND UseDate BETWEEN '{fromDate}' AND '{toDate}'" +
+                        "GROUP BY A.Description, B.Description, C.Description, strftime(\"%m\", UseDate) " +
+                        "ORDER BY Bank, strftime(\"%m\", UseDate), UseWhere";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        returnData.Add(new InOutModel
+                        {
+                            Bank = reader["Bank"].ToString(),
+                            Card = reader["Card"].ToString(),
+                            Use = reader["UseWhere"].ToString(),
+                            Money = ((long)reader["Money"]).ToString(),
+                            UseDate = reader["UseDate"].ToString(),
+                        });
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+            }
+            return returnData;
         }
     }
 }

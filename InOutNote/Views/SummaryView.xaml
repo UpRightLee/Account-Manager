@@ -19,8 +19,8 @@
     </behaviors:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.15*"/>
-            <RowDefinition Height="0.85*"/>
+            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="0.9*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>

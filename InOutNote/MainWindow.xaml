@@ -22,6 +22,12 @@
             </TabItem>
             <TabItem Style="{StaticResource TabItemControl}">
                 <TabItem.Header>
+                    <TextBlock Text="출금 요약 내역"/>
+                </TabItem.Header>
+                <Frame Source="/Views/GroupView.xaml"/>
+            </TabItem>
+            <TabItem Style="{StaticResource TabItemControl}">
+                <TabItem.Header>
                     <TextBlock Text="Code"/>
                 </TabItem.Header>
                 <Frame Source="/Views/CodeView.xaml"/>

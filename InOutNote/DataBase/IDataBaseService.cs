@@ -22,7 +22,6 @@ namespace InOutNote.DataBase
         public List<SummaryData> SelectBankSummaryList();
         public string SelectINBalanceInfo();
         public string SelectOUTBalanceInfo();
-
         public bool DeleteInOutData(InOutModel inOutData);
         public bool DeleteBankCode(Bank bank);
         public bool DeleteUseCode(Use use);
@@ -30,5 +29,6 @@ namespace InOutNote.DataBase
         public bool InsertInOutData(InOutModel inOutData);
         public bool InsertBankCardCode(string kind, string bank, string card);
         public bool InsertUseCode(string use);
+        public List<InOutModel> SelectGroupByInOutData(string fromDate, string ToDate);
     }
 }

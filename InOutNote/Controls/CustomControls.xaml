@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:dataControl="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=DotNetProjects.DataVisualization.Toolkit">
     <Style x:Key="TabItemControl" TargetType="TabItem">
-        <Setter Property="Width" Value="150"/>
-        <Setter Property="FontSize" Value="30"/>
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="FontSize" Value="25"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Height" Value="55"/>
         <Setter Property="FontFamily" Value="맑은 고딕"/>
@@ -28,7 +28,7 @@
                                      Value="True">
                             <Setter TargetName="border"
                                         Property="Background"
-                                        Value="#2E2E2E" />
+                                        Value="#000000" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -38,7 +38,7 @@
     <Style x:Key="CustomLabel" TargetType="Label">
         <Setter Property="Background" Value="#2E2E2E"/>
         <Setter Property="Foreground" Value="#FFFFFF"/>
-        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -82,7 +82,7 @@
     <Style x:Key="CustomDatePicker" TargetType="DatePicker">
         <Setter Property="Background" Value="#2E2E2E"/>
         <Setter Property="Foreground" Value="#111111"/>
-        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -92,7 +92,7 @@
     <Style x:Key="CustomButton" TargetType="Button">
         <Setter Property="Background" Value="#2E2E2E"/>
         <Setter Property="Foreground" Value="#FFFFFF"/>
-        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -107,7 +107,7 @@
         </Style.Triggers>
     </Style>
     <Style x:Key="CustomComboBox" TargetType="ComboBox">
-        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -117,7 +117,7 @@
     <Style x:Key="CustomDataGridColunm" TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="#2E2E2E"/>
         <Setter Property="Foreground" Value="#FFFFFF"/>
-        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -127,7 +127,7 @@
     <Style x:Key="CustomDataGridColunmCell" TargetType="DataGridCell">
         <Setter Property="Background" Value="#FEFEFE"/>
         <Setter Property="Foreground" Value="#111111"/>
-        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="FontSize" Value="17"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="TextBlock.TextAlignment" Value="Center"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -143,7 +143,7 @@
     <Style x:Key="CustomDataGridColunmCellMoney" TargetType="DataGridCell">
         <Setter Property="Background" Value="#FEFEFE"/>
         <Setter Property="Foreground" Value="#111111"/>
-        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="FontSize" Value="17"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="TextBlock.TextAlignment" Value="Right"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -171,7 +171,7 @@
     <Style x:Key="CustomText" TargetType="TextBox">
         <Setter Property="Background" Value="#FFFFFF"/>
         <Setter Property="Foreground" Value="#000000"/>
-        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -179,7 +179,7 @@
     <Style x:Key="CustomAddLabel" TargetType="Label">
         <Setter Property="Background" Value="#2E2E2E"/>
         <Setter Property="Foreground" Value="#FFFFFF"/>
-        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -187,7 +187,7 @@
         <Setter Property="BorderBrush" Value="#FFFFFF"/>
     </Style>
     <Style x:Key="CustomAddComboBox" TargetType="ComboBox">
-        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -197,7 +197,7 @@
     <Style x:Key="CustomAddDatePicker" TargetType="DatePicker">
         <Setter Property="Background" Value="#2E2E2E"/>
         <Setter Property="Foreground" Value="#111111"/>
-        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -207,7 +207,7 @@
     <Style x:Key="CustomAddButton" TargetType="Button">
         <Setter Property="Background" Value="#2E2E2E"/>
         <Setter Property="Foreground" Value="#FFFFFF"/>
-        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
