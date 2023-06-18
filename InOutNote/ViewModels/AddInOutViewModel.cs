@@ -35,6 +35,7 @@ namespace InOutNote.ViewModels
         private string selectedMoney = "";
         private string selectedDetail = "";
         private bool isCardEnabled = false;
+
         public DateTime SelectedDate
         {
             get { return selectedDate; }
