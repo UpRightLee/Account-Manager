@@ -11,6 +11,9 @@
     <Window.DataContext>
         <vm:AddBankCardCodeViewModel/>
     </Window.DataContext>
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="{Binding CloseByESCCommand}"/>
+    </Window.InputBindings>
     <behaviors:Interaction.Triggers>
         <behaviors:EventTrigger EventName="Loaded">
             <behaviors:InvokeCommandAction Command="{Binding LoadAddBankCardViewCommand}"/>

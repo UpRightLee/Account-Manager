@@ -168,6 +168,7 @@ namespace InOutNote.ViewModels
         public RelayCommand AddDataCommand { get; }
         public RelayCommand CancelDataCommand { get; }
         public RelayCommand UnloadAddInOutViewCommand { get; }
+        public RelayCommand CloseByESCCommand { get; }
 
         public AddInOutViewModel()
         {
@@ -175,6 +176,12 @@ namespace InOutNote.ViewModels
             AddDataCommand = new RelayCommand(AddData);
             CancelDataCommand = new RelayCommand(CancelData);
             UnloadAddInOutViewCommand = new RelayCommand(UnloadInOutView);
+            CloseByESCCommand = new RelayCommand(CloseByESC);
+        }
+
+        private void CloseByESC()
+        {
+            windowService.CloseAddInoutView();
         }
 
         private void LoadInOutView()

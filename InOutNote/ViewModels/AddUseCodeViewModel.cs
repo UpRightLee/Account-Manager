@@ -34,13 +34,19 @@ namespace InOutNote.ViewModels
         public RelayCommand AddDataCommand { get; }
         public RelayCommand CancelDataCommand { get; }
         public RelayCommand UnloadAddCodeViewCommand { get; }
-
+        public RelayCommand CloseByESCCommand { get; }
         public AddUseCodeViewModel()
         {
             LoadAddCodeViewCommand = new RelayCommand(LoadAddCodeView);
             AddDataCommand = new RelayCommand(AddData);
             CancelDataCommand = new RelayCommand(CancelData);
             UnloadAddCodeViewCommand = new RelayCommand(UnloadAddCodeView);
+            CloseByESCCommand = new RelayCommand(CloseByESC);
+        }
+
+        private void CloseByESC()
+        {
+            windowService.CloseAddUseCodeView();
         }
 
         private void LoadAddCodeView()

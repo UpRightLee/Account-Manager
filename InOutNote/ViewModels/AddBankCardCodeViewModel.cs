@@ -66,13 +66,19 @@ namespace InOutNote.ViewModels
         public RelayCommand AddDataCommand { get; }
         public RelayCommand CancelDataCommand { get; }
         public RelayCommand UnloadAddBankCardViewCommand { get; }
-
+        public RelayCommand CloseByESCCommand { get; }
         public AddBankCardCodeViewModel()
         {
             LoadAddBankCardViewCommand = new RelayCommand(LoadAddBankCardView);
             AddDataCommand = new RelayCommand(AddData);
             CancelDataCommand = new RelayCommand(CancelData);
             UnloadAddBankCardViewCommand = new RelayCommand(UnloadAddBankCardView);
+            CloseByESCCommand = new RelayCommand(CloseByESC);
+        }
+
+        private void CloseByESC()
+        {
+            windowService.CloseAddBankCardCodeView();
         }
 
         private void LoadAddBankCardView()
