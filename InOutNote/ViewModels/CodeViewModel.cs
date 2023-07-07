@@ -23,35 +23,37 @@ namespace InOutNote.ViewModels
 
         private ObservableCollection<Bank> bankList = new ObservableCollection<Bank>();
         private ObservableCollection<Use> useList = new ObservableCollection<Use>();
+        private ObservableCollection<BankCardUseSet> bankCardUseSetList = new ObservableCollection<BankCardUseSet>();
 
         private ObservableCollection<string> kind = new ObservableCollection<string>();
         private ObservableCollection<string> bank = new ObservableCollection<string>();
 
         private string selectedKind = "";
         private string selectedBank = "";
-        private string selectedBankOrKind = "";
+        private string selectedBankOrKindOrSet = "";
 
         private Use? selectedRowKind;
         private Bank? selectedRowBank;
+        private BankCardUseSet? selectedRowSet;
 
-        private ObservableCollection<string> bankOrKind = new ObservableCollection<string>();
+        private ObservableCollection<string> bankOrKindOrSet = new ObservableCollection<string>();
 
-        public ObservableCollection<string> BankOrKind
+        public ObservableCollection<string> BankOrKindOrSet
         {
-            get { return bankOrKind; }
+            get { return bankOrKindOrSet; }
             set
             {
-                bankOrKind = value;
-                OnPropertyChanged("BankOrKind");
+                bankOrKindOrSet = value;
+                OnPropertyChanged("BankOrKindOrSet");
             }
         }
-        public string SelectedBankOrKind
+        public string SelectedBankOrKindOrSet
         {
-            get { return selectedBankOrKind; }
+            get { return selectedBankOrKindOrSet; }
             set
             {
-                selectedBankOrKind = value;
-                OnPropertyChanged("SelectedBankOrKind");
+                selectedBankOrKindOrSet = value;
+                OnPropertyChanged("SelectedBankOrKindOrSet");
             }
         }
         public Bank SelectedRowBank
@@ -69,10 +71,18 @@ namespace InOutNote.ViewModels
             set
             {
                 selectedRowKind = value;
-                OnPropertyChanged("RowKind");
+                OnPropertyChanged("SelectedRowUse");
             }
         }
-
+        public BankCardUseSet SelectedRowSet
+        {
+            get { return selectedRowSet!; }
+            set
+            {
+                selectedRowSet = value;
+                OnPropertyChanged("SelectedRowSet");
+            }
+        }
         public ObservableCollection<Bank> BankList
         {
             get { return bankList;}
@@ -89,6 +99,15 @@ namespace InOutNote.ViewModels
             {
                 useList = value;
                 OnPropertyChanged("UseList");
+            }
+        }
+        public ObservableCollection<BankCardUseSet> BankCardUseSetList
+        {
+            get { return bankCardUseSetList; }
+            set
+            {
+                bankCardUseSetList = value;
+                OnPropertyChanged("BankCardUseSetList");
             }
         }
         public ObservableCollection<string> Kind
@@ -134,6 +153,7 @@ namespace InOutNote.ViewModels
         public RelayCommand AddDataCommand { get; }
         public RelayCommand DeleteDataCommand { get; }
         public RelayCommand UnloadCodeViewCommand { get; }
+        public RelayCommand UpdateBankUseSetCommand { get; }
         public CodeViewModel()
         {
             LoadCodeViewCommand = new RelayCommand(LoadCodeView);
@@ -142,8 +162,14 @@ namespace InOutNote.ViewModels
             AddDataCommand = new RelayCommand(AddData);
             DeleteDataCommand = new RelayCommand(DeleteData);
             UnloadCodeViewCommand = new RelayCommand(UnloadCodeView);
+            UpdateBankUseSetCommand = new RelayCommand(UpdateBankUseSet);
         }
- 
+
+        private void UpdateBankUseSet()
+        {
+            throw new NotImplementedException();
+        }
+
         private void DeleteData()
         {
             if (SelectedRowBank != null)
@@ -156,23 +182,28 @@ namespace InOutNote.ViewModels
                 if (dataBaseService.DeleteUseCode(SelectedRowUse)) messageBoxService.ShowMessageBox("========== Delete Use Success ==========");
                 else messageBoxService.ShowMessageBox("========== Delete Use Fail ==========");
             }
+            if (SelectedBankOrKindOrSet != null)
+            {
+                
+            }
             SelectData();
         }
 
         private void AddData()
         {
-            if (SelectedBankOrKind == "은행 및 카드") windowService.ShowAddBankCardCodeView();
-            else windowService.ShowAddUseCodeView();
+            if (SelectedBankOrKindOrSet == "은행 및 카드") windowService.ShowAddBankCardCodeView();
+            else if (SelectedBankOrKindOrSet == "용도") windowService.ShowAddUseCodeView();
+            
         }
 
         private void ExcelDownload()
         {
-            if (SelectedBankOrKind == "은행 및 카드")
+            if (SelectedBankOrKindOrSet == "은행 및 카드")
             {
                 if (excelService.SaveBankCardCodeList(BankList)) messageBoxService.ShowMessageBox("========== Excel Save Success ==========");
                 else messageBoxService.ShowMessageBox("========== Excel Save Fail ==========");
             }
-            else
+            else if (SelectedBankOrKindOrSet == "용도")
             {
                 if (excelService.SaveUseCodeList(UseList)) messageBoxService.ShowMessageBox("========== Excel Save Success ==========");
                 else messageBoxService.ShowMessageBox("========== Excel Save Fail ==========");
@@ -209,14 +240,27 @@ namespace InOutNote.ViewModels
                     Description = returnUse[i].Description
                 });
             }
+
+            List<BankCardUseSet> returnSet = dataBaseService.SelectBankCardUseSetList();
+            BankCardUseSetList = new ObservableCollection<BankCardUseSet>();
+            for (int i = 0; i < returnSet.Count; i++)
+            {
+                BankCardUseSetList.Add(new BankCardUseSet
+                {
+                    BankName= returnSet[i].BankName,
+                    CardName = returnSet[i].CardName,
+                    UseName = returnSet[i].UseName
+                });
+            }
         }
 
         private void LoadCodeView()
         {
-            BankOrKind = new ObservableCollection<string>();
-            BankOrKind.Add("은행 및 카드");
-            BankOrKind.Add("용도");
-            SelectedBankOrKind = "은행 및 카드";
+            BankOrKindOrSet = new ObservableCollection<string>();
+            BankOrKindOrSet.Add("은행 및 카드");
+            BankOrKindOrSet.Add("용도");
+            BankOrKindOrSet.Add("즐겨찾기");
+            SelectedBankOrKindOrSet = "은행 및 카드";
 
             Kind = new ObservableCollection<string>();
             Kind.Add("신용");
@@ -249,6 +293,18 @@ namespace InOutNote.ViewModels
                 {
                     Name= returnUse[i].Name,
                     Description= returnUse[i].Description
+                });
+            }
+
+            List<BankCardUseSet> returnSet = dataBaseService.SelectBankCardUseSetList();
+            BankCardUseSetList = new ObservableCollection<BankCardUseSet>();
+            for (int i = 0; i < returnSet.Count; i++)
+            {
+                BankCardUseSetList.Add(new BankCardUseSet
+                {
+                    BankName = returnSet[i].BankName,
+                    CardName = returnSet[i].CardName,
+                    UseName = returnSet[i].UseName
                 });
             }
         }

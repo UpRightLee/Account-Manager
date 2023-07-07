@@ -74,13 +74,18 @@ namespace InOutNote.DataBase
                         "Description TEXT NOT NULL, " +
                         "PRIMARY KEY(Use) );";
 
-                    string sql5 = "CREATE TABLE IF NOT EXITS Credit_Card_Use_Info(" +
+                    string sql5 = "CREATE TABLE IF NOT EXISTS Credit_Card_Use_Info(" +
                         "Money INTEGER NOT NULL, " +
                         "UseDate TEXT, " +
                         "Bank INTEGER, " +
                         "Card INTEGER, " +
                         "UseWhere INTEGER NOT NULL, " +
                         "Detail TEXT)";
+
+                    string sql6 = "CREATE TABLE IF NOT EXISTS Bank_Card_Use_Set(" +
+                        "Bank INTEGER NOT NULL, " +
+                        "Card INTEGER, " +
+                        "Use INTEGER NOT NULL)";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     command.ExecuteNonQuery();
@@ -95,6 +100,9 @@ namespace InOutNote.DataBase
                     command.ExecuteNonQuery();
 
                     command = new SQLiteCommand(sql5, connection);
+                    command.ExecuteNonQuery();
+
+                    command = new SQLiteCommand(sql6, connection);
                     command.ExecuteNonQuery();
 
                     log.Info($"{MethodBase.GetCurrentMethod()?.Name}::Create DB Success");
@@ -552,6 +560,44 @@ namespace InOutNote.DataBase
                             InOut = reader["InOut"].ToString() == "IN" ? "입금" : "출금",
                             Money = ((long)reader["Money"]).ToString(),
                             Bank = reader["Description"].ToString()
+                        });
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+            }
+            return returnData;
+        }
+        public List<BankCardUseSet> SelectBankCardUseSetList()
+        {
+            List<BankCardUseSet> returnData = new List<BankCardUseSet>();
+
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+
+                    string sql = "SELECT A.Description AS Bank, B.Description AS Card, C.Description AS Use " +
+                        "FROM Bank_Card_Use_Set " +
+                        "LEFT JOIN Bank_Code A ON Bank_Card_Use_Set.Bank = A.Bank " +
+                        "LEFT JOIN Card_Code B ON Bank_Card_Use_Set.Card = B.Card " +
+                        "LEFT JOIN Use_Code C ON Bank_Card_Use_Set.Use = C.Use; ";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        returnData.Add(new BankCardUseSet
+                        {
+                           BankName = reader["Bank"].ToString(),
+                           CardName = reader["Card"].ToString(),
+                           UseName = reader["Use"].ToString(),
                         });
                     }
                     reader.Close();

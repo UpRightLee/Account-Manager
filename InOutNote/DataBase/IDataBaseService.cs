@@ -20,6 +20,7 @@ namespace InOutNote.DataBase
         public List<Bank> SelectBankCardCode(Bank bank);
         public List<SummaryData> SelectBalanceInfo(string year);
         public List<SummaryData> SelectBankSummaryList();
+        public List<BankCardUseSet> SelectBankCardUseSetList();
         public string SelectINBalanceInfo();
         public string SelectOUTBalanceInfo();
         public bool DeleteInOutData(InOutModel inOutData);

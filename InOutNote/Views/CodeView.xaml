@@ -73,13 +73,22 @@
             </Grid>
             <Grid Grid.Column="3" Grid.Row="1">
                 <ComboBox Grid.Column="0" Style="{DynamicResource CustomComboBox}"
-                          ItemsSource="{Binding BankOrKind}" SelectedItem="{Binding SelectedBankOrKind, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                          ItemsSource="{Binding BankOrKindOrSet}" SelectedItem="{Binding SelectedBankOrKindOrSet, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
-            <Grid Grid.Column="4" Grid.Row="1"/>
+            <Grid Grid.Column="4" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.2*"/>
+                    <ColumnDefinition Width="0.8*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="1" Content="즐겨찾기 수정" Style="{DynamicResource CustomButton}" Command="{Binding UpdateBankUseSetCommand}"/>
+            </Grid>
         </Grid>
         <Grid Grid.Row="1" Background="#e2e2e2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.6*"/>
+                <ColumnDefinition Width="0.3*"/>
+                <ColumnDefinition Width="0.05*"/>
+                <ColumnDefinition Width="0.3*"/>
+                <ColumnDefinition Width="0.05*"/>
                 <ColumnDefinition Width="0.4*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
@@ -91,11 +100,20 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="2">
                 <DataGrid ItemsSource="{Binding UseList}" Style="{DynamicResource CustomGrid}" SelectedItem="{Binding SelectedRowUse, Mode=TwoWay}" >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="번호" Binding="{Binding Name}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                         <DataGridTextColumn Header="용도" Binding="{Binding Description}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+            <Grid Grid.Column="4">
+                <DataGrid ItemsSource="{Binding BankCardUseSetList}" Style="{DynamicResource CustomGrid}" SelectedItem="{Binding SelectedRowSet, Mode=TwoWay}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="은행" Binding="{Binding BankName}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="카드" Binding="{Binding CardName}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
+                        <DataGridTextColumn Header="용도" Binding="{Binding UseName}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
