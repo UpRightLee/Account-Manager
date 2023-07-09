@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +27,8 @@ namespace InOutNote.ViewModels
         private ObservableCollection<string> bank = new ObservableCollection<string>();
         private ObservableCollection<string> card = new ObservableCollection<string>();
         private ObservableCollection<string> use = new ObservableCollection<string>();
+
+        private List<BankCardUseSet> bankCardUseSets = new List<BankCardUseSet>();
 
         private string selectedInOut = "";
         private string selectedKind = "";
@@ -204,8 +207,7 @@ namespace InOutNote.ViewModels
             for (int i = 0; i < returnUse.Count; i++)
             {
                 Use.Add(returnUse[i].Description!);
-            }
-            SelectedUse = Use[0];
+            }  
         }
 
         private void UnloadInOutView()
@@ -263,6 +265,29 @@ namespace InOutNote.ViewModels
                 SelectedCard = Card[0];
             }
             else IsCardEnabled = false;
+
+            bankCardUseSets = dataBaseService.SelectBankCardUseSetList();
+
+            for (int i = 0; i < bankCardUseSets.Count; i++)
+            {
+                if (SelectedCard != null)
+                {
+                    if (bankCardUseSets[i].KindName == SelectedKind &&
+                        bankCardUseSets[i].BankName == SelectedBank &&
+                        bankCardUseSets[i].CardName == SelectedCard)
+                    {
+                        SelectedUse = bankCardUseSets[i].UseName!;
+                    }
+                }
+                else
+                {
+                    if (bankCardUseSets[i].KindName == SelectedKind &&
+                        bankCardUseSets[i].BankName == SelectedBank)
+                    {
+                        SelectedUse = bankCardUseSets[i].UseName!;
+                    }
+                }
+            }
         }
         private void IsChangedBank()
         {
@@ -285,6 +310,29 @@ namespace InOutNote.ViewModels
                 SelectedCard = Card[0];
             }
             else IsCardEnabled = false;
+
+            bankCardUseSets = dataBaseService.SelectBankCardUseSetList();
+
+            for (int i = 0; i < bankCardUseSets.Count; i++)
+            {
+                if (SelectedCard != null)
+                {
+                    if (bankCardUseSets[i].KindName == SelectedKind &&
+                        bankCardUseSets[i].BankName == SelectedBank &&
+                        bankCardUseSets[i].CardName == SelectedCard)
+                    {
+                        SelectedUse = bankCardUseSets[i].UseName!;
+                    }
+                }
+                else
+                {
+                    if (bankCardUseSets[i].KindName == SelectedKind &&
+                        bankCardUseSets[i].BankName == SelectedBank)
+                    {
+                        SelectedUse = bankCardUseSets[i].UseName!;
+                    }
+                }
+            }
         }
     }
 }

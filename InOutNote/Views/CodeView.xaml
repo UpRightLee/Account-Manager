@@ -80,7 +80,7 @@
                     <ColumnDefinition Width="0.2*"/>
                     <ColumnDefinition Width="0.8*"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="1" Content="즐겨찾기 수정" Style="{DynamicResource CustomButton}" Command="{Binding UpdateBankUseSetCommand}"/>
+                <!--<Button Grid.Column="1" Content="즐겨찾기 수정" Style="{DynamicResource CustomButton}" Command="{Binding UpdateBankUseSetCommand}"/> -->
             </Grid>
         </Grid>
         <Grid Grid.Row="1" Background="#e2e2e2">
@@ -111,6 +111,7 @@
             <Grid Grid.Column="4">
                 <DataGrid ItemsSource="{Binding BankCardUseSetList}" Style="{DynamicResource CustomGrid}" SelectedItem="{Binding SelectedRowSet, Mode=TwoWay}">
                     <DataGrid.Columns>
+                        <DataGridTextColumn Header="분류" Binding="{Binding KindName}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                         <DataGridTextColumn Header="은행" Binding="{Binding BankName}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                         <DataGridTextColumn Header="카드" Binding="{Binding CardName}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>
                         <DataGridTextColumn Header="용도" Binding="{Binding UseName}" HeaderStyle="{DynamicResource CustomDataGridColunm}" CellStyle="{DynamicResource CustomDataGridColunmCell}"/>

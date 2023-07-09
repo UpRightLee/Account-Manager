@@ -167,7 +167,7 @@ namespace InOutNote.ViewModels
 
         private void UpdateBankUseSet()
         {
-            throw new NotImplementedException();
+            
         }
 
         private void DeleteData()
@@ -184,7 +184,8 @@ namespace InOutNote.ViewModels
             }
             if (SelectedBankOrKindOrSet != null)
             {
-                
+                if (dataBaseService.DeleteBankCardUseSet(SelectedRowSet.BankName!, SelectedRowSet.CardName!, SelectedRowSet.UseName!)) messageBoxService.ShowMessageBox("========== Delete 즐겨찾기 Success ==========");
+                else messageBoxService.ShowMessageBox("========== Delete 즐겨찾기 Fail ==========");
             }
             SelectData();
         }
@@ -193,7 +194,7 @@ namespace InOutNote.ViewModels
         {
             if (SelectedBankOrKindOrSet == "은행 및 카드") windowService.ShowAddBankCardCodeView();
             else if (SelectedBankOrKindOrSet == "용도") windowService.ShowAddUseCodeView();
-            
+            else if (SelectedBankOrKindOrSet == "즐겨찾기") windowService.ShowAddSetView();
         }
 
         private void ExcelDownload()
@@ -247,6 +248,7 @@ namespace InOutNote.ViewModels
             {
                 BankCardUseSetList.Add(new BankCardUseSet
                 {
+                    KindName = returnSet[i].KindName,
                     BankName= returnSet[i].BankName,
                     CardName = returnSet[i].CardName,
                     UseName = returnSet[i].UseName
@@ -302,6 +304,7 @@ namespace InOutNote.ViewModels
             {
                 BankCardUseSetList.Add(new BankCardUseSet
                 {
+                    KindName = returnSet[i].KindName,
                     BankName = returnSet[i].BankName,
                     CardName = returnSet[i].CardName,
                     UseName = returnSet[i].UseName

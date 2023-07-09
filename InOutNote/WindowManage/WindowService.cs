@@ -14,6 +14,8 @@ namespace InOutNote.WindowManage
         private AddInOutView? addInOutView = null;
         private AddBankCardCodeView? addBankCardCodeView = null;
         private AddUseCodeView? addUseCodeView = null;
+        private AddSetView? addSetView = null;
+
         public static WindowService Instance
         {
             get 
@@ -75,6 +77,25 @@ namespace InOutNote.WindowManage
             {
                 addUseCodeView.Close();
                 addUseCodeView = null;
+            }
+        }
+
+        public void ShowAddSetView()
+        {
+            if (addSetView == null)
+            {
+                addSetView = new AddSetView();
+                addSetView.ShowDialog();
+            }
+            else addSetView.ShowDialog();
+        }
+
+        public void CloseAddSetView()
+        {
+            if (addSetView != null)
+            {
+                addSetView.Close();
+                addSetView = null;
             }
         }
     }

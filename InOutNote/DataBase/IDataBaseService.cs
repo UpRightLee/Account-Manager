@@ -1,4 +1,5 @@
 ﻿using InOutNote.Models;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,13 +24,17 @@ namespace InOutNote.DataBase
         public List<BankCardUseSet> SelectBankCardUseSetList();
         public string SelectINBalanceInfo();
         public string SelectOUTBalanceInfo();
+        public List<InOutModel> SelectGroupByInOutData(string fromDate, string ToDate);
+
         public bool DeleteInOutData(InOutModel inOutData);
         public bool DeleteBankCode(Bank bank);
         public bool DeleteUseCode(Use use);
         public bool DeleteCreditData(string month);
+        public bool DeleteBankCardUseSet(string bank, string card, string use);
+
         public bool InsertInOutData(InOutModel inOutData);
         public bool InsertBankCardCode(string kind, string bank, string card);
         public bool InsertUseCode(string use);
-        public List<InOutModel> SelectGroupByInOutData(string fromDate, string ToDate);
+        public bool InsertBankCardUseSet(string kind, string bank, string card, string use);
     }
 }

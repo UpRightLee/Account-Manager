@@ -14,5 +14,7 @@ namespace InOutNote.WindowManage
         void CloseAddBankCardCodeView();
         void ShowAddUseCodeView();
         void CloseAddUseCodeView();
+        void ShowAddSetView();
+        void CloseAddSetView();
     }
 }

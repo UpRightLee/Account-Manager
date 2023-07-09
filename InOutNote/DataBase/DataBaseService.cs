@@ -85,7 +85,8 @@ namespace InOutNote.DataBase
                     string sql6 = "CREATE TABLE IF NOT EXISTS Bank_Card_Use_Set(" +
                         "Bank INTEGER NOT NULL, " +
                         "Card INTEGER, " +
-                        "Use INTEGER NOT NULL)";
+                        "Use INTEGER NOT NULL, " +
+                        "Kind NOT NULL)";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     command.ExecuteNonQuery();
@@ -583,11 +584,11 @@ namespace InOutNote.DataBase
                 {
                     connection.Open();
 
-                    string sql = "SELECT A.Description AS Bank, B.Description AS Card, C.Description AS Use " +
-                        "FROM Bank_Card_Use_Set " +
-                        "LEFT JOIN Bank_Code A ON Bank_Card_Use_Set.Bank = A.Bank " +
-                        "LEFT JOIN Card_Code B ON Bank_Card_Use_Set.Card = B.Card " +
-                        "LEFT JOIN Use_Code C ON Bank_Card_Use_Set.Use = C.Use; ";
+                    string sql = "SELECT M.Kind, A.Description AS Bank, B.Description AS Card, C.Description AS Use " +
+                        "FROM Bank_Card_Use_Set M " +
+                        "LEFT JOIN Bank_Code A ON M.Bank = A.Bank " +
+                        "LEFT JOIN Card_Code B ON M.Card = B.Card " +
+                        "LEFT JOIN Use_Code C ON M.Use = C.Use; ";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     SQLiteDataReader reader = command.ExecuteReader();
@@ -595,6 +596,7 @@ namespace InOutNote.DataBase
                     {
                         returnData.Add(new BankCardUseSet
                         {
+                           KindName = reader["Kind"].ToString(),
                            BankName = reader["Bank"].ToString(),
                            CardName = reader["Card"].ToString(),
                            UseName = reader["Use"].ToString(),
@@ -826,6 +828,40 @@ namespace InOutNote.DataBase
                 return false;
             }
         }
+        public bool DeleteBankCardUseSet(string bank, string card, string use)
+        {
+            bool returnData = false;
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+
+                    string sql = "DELETE FROM Bank_Card_Use_Set " +
+                        "WHERE " +
+                        $"Bank = (SELECT Bank From Bank_Code WHERE Description = '{bank}') " +
+                        $"AND Use = (SELECT Use From Use_Code WHERE Description = '{use}')";
+
+                    if (card != "")
+                    {
+                        sql += $"AND Card = (SELECT Card From Card_Code WHERE Description = '{card}');";
+                    }
+                    else sql += ";";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    returnData = command.ExecuteNonQuery() > 0;
+                }
+                if (returnData) return true;
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+                return false;
+            }
+        }
 
         public bool InsertInOutData(InOutModel inOutData)
         {
@@ -986,6 +1022,36 @@ namespace InOutNote.DataBase
                             "(Description) " +
                             "VALUES " +
                             $"('{use}');";
+
+                    SQLiteCommand command = new SQLiteCommand(sql, connection);
+                    returnData = command.ExecuteNonQuery() > 0;
+                }
+                if (returnData) return true;
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"{MethodBase.GetCurrentMethod()?.Name}::{ex.Message}");
+                return false;
+            }
+        }
+        public bool InsertBankCardUseSet(string kind, string bank, string card, string use)
+        {
+            bool returnData = false;
+            string path = String.Format("Data Source = {0}", filePath);
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(path))
+                {
+                    connection.Open();
+                    string sql = "INSERT INTO Bank_Card_Use_Set " +
+                            "(Bank, Card, Use, Kind) " +
+                            "VALUES " +
+                            $"((SELECT Bank FROM Bank_Code WHERE Description = '{bank}')," +
+                            $"(SELECT Card FROM Card_Code WHERE Description = '{card}')," +
+                            $"(SELECT Use FROM Use_Code WHERE Description = '{use}'), " +
+                            $"'{kind}');";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     returnData = command.ExecuteNonQuery() > 0;
