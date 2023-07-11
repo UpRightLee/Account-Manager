@@ -199,7 +199,7 @@ namespace InOutNote.ViewModels
         public RelayCommand DeleteDataCommand { get; }
         public RelayCommand UnloadInOutViewCommand { get; }
         public RelayCommand DeleteCreaditDataCommand { get; }
-
+        public RelayCommand SelectDataByF5Command { get; }
         public InOutViewModel()
         {
             LoadInOutViewCommand = new RelayCommand(LoadInOutView);
@@ -209,6 +209,12 @@ namespace InOutNote.ViewModels
             DeleteDataCommand = new RelayCommand(DeleteData);
             UnloadInOutViewCommand = new RelayCommand(UnloadInOutView);
             DeleteCreaditDataCommand = new RelayCommand(DeleteCreditData);
+            SelectDataByF5Command = new RelayCommand(SelectDataByF5);
+        }
+
+        private void SelectDataByF5()
+        {
+            SelectData();
         }
 
         private void DeleteCreditData()
@@ -476,7 +482,8 @@ namespace InOutNote.ViewModels
                 }
                 Card.Add("전체");
                 SelectedCard = "전체";
-            }  
+            }
+            SelectData();
         }
     }
 }

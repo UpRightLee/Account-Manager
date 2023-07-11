@@ -12,6 +12,9 @@
     <Page.DataContext>
         <vm:InOutViewModel/>
     </Page.DataContext>
+    <Page.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding SelectDataByF5Command}" />
+    </Page.InputBindings>
     <behaviors:Interaction.Triggers>
         <behaviors:EventTrigger EventName="Loaded">
             <behaviors:InvokeCommandAction Command="{Binding LoadInOutViewCommand}"/>
