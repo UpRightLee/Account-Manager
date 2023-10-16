@@ -129,7 +129,7 @@ namespace InOutNote.DataBase
                     $"WHERE UseDate BETWEEN '{weekBefore}' AND '{today}' " +
                     $"AND UseWhere != 19 " +
                     $"GROUP BY InOut, UseDate " +
-                    $"ORDER BY UseDate;";
+                    $"ORDER BY UseDate DESC;";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     SQLiteDataReader reader = command.ExecuteReader();
@@ -216,7 +216,7 @@ namespace InOutNote.DataBase
                         "LEFT JOIN Card_Code B ON Credit_Card_Use_Info.Card = B.Card " +
                         "LEFT JOIN Use_Code C ON Credit_Card_Use_Info.UseWhere = C.Use " +
                         $"WHERE UseDate BETWEEN '{fromDate}' AND '{ToDate}' " +
-                        $"ORDER BY UseDate;";
+                        $"ORDER BY UseDate DESC;";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     SQLiteDataReader reader = command.ExecuteReader();
@@ -277,7 +277,7 @@ namespace InOutNote.DataBase
                     if (inOutModel.Card != "전체") sql = sql + $"AND B.Description = '{inOutModel.Card}' ";
                     if (inOutModel.Use != "전체") sql = sql + $"AND C.Description = '{inOutModel.Use}' ";
 
-                    sql = sql + $"ORDER BY UseDate;";
+                    sql = sql + $"ORDER BY UseDate DESC;";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     SQLiteDataReader reader = command.ExecuteReader();
