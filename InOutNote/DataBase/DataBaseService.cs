@@ -129,7 +129,7 @@ namespace InOutNote.DataBase
                     $"WHERE UseDate BETWEEN '{weekBefore}' AND '{today}' " +
                     $"AND UseWhere != 19 " +
                     $"GROUP BY InOut, UseDate " +
-                    $"ORDER BY UseDate DESC;";
+                    $"ORDER BY UseDate;";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     SQLiteDataReader reader = command.ExecuteReader();

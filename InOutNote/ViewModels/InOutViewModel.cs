@@ -326,7 +326,7 @@ namespace InOutNote.ViewModels
                     creditTotal += int.Parse(creditList[i].Money!);
                 }
 
-                InOutList.Add(
+                InOutList.Insert(returnInOutData.Count+1,
                     new InOutModel
                     {
                         InOut = "신용카드 합계",
