@@ -66,7 +66,7 @@ namespace InOutNote.ViewModels
         private void LoadGroupView()
         {
             SelectedToDate = DateTime.Now;
-            SelectedFromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 3, 1);
+            SelectedFromDate = DateTime.Now.AddMonths(-3);
 
             SelectData();
         }
