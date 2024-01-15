@@ -807,6 +807,11 @@ namespace InOutNote.DataBase
             bool returnData = false;
             string path = String.Format("Data Source = {0}", filePath);
 
+            string year = "";
+
+            if (DateTime.Now.Month == 1 && DateTime.Now.Day > 14) year = DateTime.Today.AddYears(-1).Year.ToString();
+            else year = DateTime.Now.Year.ToString();
+
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(path))
@@ -814,7 +819,7 @@ namespace InOutNote.DataBase
                     connection.Open();
 
                     string sql = "DELETE FROM Credit_Card_Use_Info " +
-                        $"WHERE strftime('%Y-%m', UseDate) = '{DateTime.Today.Year}-{month}';";
+                        $"WHERE strftime('%Y-%m', UseDate) = '{year}-{month}';";
 
                     SQLiteCommand command = new SQLiteCommand(sql, connection);
                     returnData = command.ExecuteNonQuery() > 0;
