@@ -161,6 +161,9 @@ namespace InOutNote.DataBase
 
             string path = String.Format("Data Source = {0}", filePath);
 
+            string today = DateTime.Now.ToString("yyyy-MM-dd");
+            string monthBefore = DateTime.Now.AddMonths(-6).ToString("yyyy-MM") + "-01";
+
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(path))
@@ -170,6 +173,7 @@ namespace InOutNote.DataBase
                     string sql = "SELECT InOut, SUM(Money) AS Money, UseDate " +
                     "FROM Balance_Info " +
                     "WHERE UseWhere != 19 " +
+                    $"AND UseDate BETWEEN '{monthBefore}' AND '{today}' " +
                     $"GROUP BY InOut, strftime(\"%m\", UseDate)  " +
                     $"ORDER BY UseDate;";
 
